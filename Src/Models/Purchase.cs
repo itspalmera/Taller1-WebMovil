@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
-using Taller1_WebMovil.src.Models;
+using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Models
 {

@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Taller1_WebMovil.src.Interface;
-using Taller1_WebMovil.src.Models;
-using Taller1_WebMovil.Src.DTOs.Products;
+using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Models;
+using Taller1_WebMovil.Src.DTOs.Products;
 
-namespace Taller1_WebMovil.src.Controller
+
+namespace Taller1_WebMovil.Src.Controller
 {
 
     public class ProductController : ControllerBase

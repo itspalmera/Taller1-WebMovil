@@ -8,7 +8,7 @@ using Taller1_WebMovil.Src.Data;
 
 #nullable disable
 
-namespace Taller1_WebMovil.src.Data.Migrations
+namespace Taller1_WebMovil.Src.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20241003193655_firstMigration")]

@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Taller1_WebMovil.src.Interface;
+using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Data;
-using Taller1_WebMovil.src.Models;
+using Taller1_WebMovil.Src.Models;
 
 
 
-namespace Taller1_WebMovil.src.Repositories
+namespace Taller1_WebMovil.Src.Repositories
 {
     public class ProductRepository : IProductRepository
     {

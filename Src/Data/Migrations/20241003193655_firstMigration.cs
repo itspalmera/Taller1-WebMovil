@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Taller1_WebMovil.src.Data.Migrations
+namespace Taller1_WebMovil.Src.Data.Migrations
 {
     /// <inheritdoc />
     public partial class firstMigration : Migration
