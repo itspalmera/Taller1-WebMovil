@@ -1,0 +1,6 @@
+@Taller1_WebMovil_HostAddress = http://localhost:5177
+
+GET {{Taller1_WebMovil_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
