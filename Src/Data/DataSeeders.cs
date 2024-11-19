@@ -13,12 +13,6 @@ namespace Taller1_WebMovil.Src.Data
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicationDbContext>();
 
-                if(!context.Roles.Any()){
-                    context.Roles.AddRange(
-                        new Role {name = "Administrador"},
-                        new Role {name = "Cliente"}
-                    );
-                }
                if(!context.Genders.Any()){
                     context.Genders.AddRange(
                         new Gender {name = "Femenino"},
@@ -38,21 +32,20 @@ namespace Taller1_WebMovil.Src.Data
                 }
                 context.SaveChanges();
 
-                if(!context.Users.Any())
+                /*if(!context.Users.Any())
                 {
                     var user = new User { 
                         rut = "20.416.699-4", 
                         name = "Ignacio Mancilla",
-                        birthDate = new DateTime(2000,10,25), 
+                        birthDate = new DateOnly(2000,10,25), 
                         email = "admin@idwm.cl.",
                         genderId = 1,
-                        password = "P4ssw0rd",
                         enable = true,
-                        roleId = 1
                     };
                     context.Users.Add(user);
                 }
                 context.SaveChanges();
+                */
             }
             
         }

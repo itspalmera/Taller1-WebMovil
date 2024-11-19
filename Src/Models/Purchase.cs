@@ -17,7 +17,7 @@ namespace Taller1_WebMovil.Src.Models
         public int productId { get; set; }
         public Product product { get; set; } = null!;
 
-        public int userId { get; set; }
+        public string userId { get; set; }
         public User user { get; set; } = null!;
 
         public int purchaseReceiptId { get; set; }

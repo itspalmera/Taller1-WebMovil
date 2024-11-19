@@ -3,25 +3,19 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Taller1_WebMovil.Src.Models
 {
-    public class User
+    public class User : IdentityUser
     {
-        [Key]
-        public int id {get; set;}
         public string rut { get; set; } = string.Empty;
         public string name { get; set; }= string.Empty;
-        public DateTime birthDate { get; set; }
-        public string email { get; set; } = string.Empty;
-        public string password { get; set; } = string.Empty;
+        public DateOnly birthDate { get; set; }
         public bool enable { get; set; }
 
 
         //Relaciones
-        public int roleId { get; set; }
-        public Role role { get; set; } = null!;
-
         public int genderId { get; set; }
         public Gender gender { get; set; } = null!;
     }
