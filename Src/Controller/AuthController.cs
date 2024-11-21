@@ -49,14 +49,23 @@ namespace Taller1_WebMovil.Src.Controller
         [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
-            // Cerrar la sesión del usuario
-            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                // Cerrar la sesión del usuario
+                await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
-            // Redirigir al usuario a la página de inicio de sesión
-            return RedirectToAction("login");
+                // Redirigir al usuario a la página de inicio de sesión
+                return RedirectToAction("login");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
 
-        
+
     }
 }

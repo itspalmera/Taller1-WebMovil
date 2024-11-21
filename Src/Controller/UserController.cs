@@ -31,7 +31,18 @@ namespace Taller1_WebMovil.Src.Controller
             if(!result){
                 return NotFound("El usuario no existe en el sistema.");
             }
-            return Ok("El usuario se editó correctamente");
+            return Ok("El usuario se editó correctamente.");
         }
+        [Authorize]
+        [HttpPut("ChangePassword/{rut}")]
+        public ActionResult<string> ChangePassword(string rut, [FromBody]ChangePasswordDto changePassword){
+
+            var result = _userService.ChangePassword(rut, changePassword).Result;
+            if(!result){
+                return NotFound("No se pudo cambiar la contraseña al usuario.");
+            }
+            return Ok("La contraseña se modificó correctamente.");
+        }
+
     }
 }

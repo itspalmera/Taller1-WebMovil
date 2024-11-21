@@ -37,6 +37,20 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
            return true;
         }
 
+        public async Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto)
+        {
+            var user = await _context.Users.Where(u => u.rut == rut).FirstOrDefaultAsync();
+            if(user == null){
+                return false;
+            }
+            var passwordValid = await _userManager.ChangePasswordAsync(user, changePasswordDto.currentPassword, changePasswordDto.newPassword);
+            if(passwordValid.Succeeded){
+                return true;
+            }
+            return false;
+
+        }
+
         public async Task<bool> EditUser(string rut, EditUserDto editUser)
         {
             var user = await _context.Users.Where(u => u.rut == rut).FirstOrDefaultAsync();

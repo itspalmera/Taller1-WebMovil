@@ -55,12 +55,12 @@ namespace Taller1_WebMovil.Src.Services.Implements
             if (user is null) return message;
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginUserDto.password, false);
-            if(user == null) return message;
+            if(!result.Succeeded) return message;
 
             var verify = await _userRepository.VerifyEnableUserByEmail(loginUserDto.email.ToString());
             if (verify is false) return message2;
 
-            var token = _tokenService.CreateToken(user);;
+            var token = _tokenService.CreateToken(user);
             return token;
 
         }
