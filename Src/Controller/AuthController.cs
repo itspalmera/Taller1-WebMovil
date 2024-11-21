@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Taller1_WebMovil.Src.DTOs.Auth;
@@ -18,7 +19,7 @@ namespace Taller1_WebMovil.Src.Controller
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] RegisterUserDto registerUserDto){
+        public async Task<ActionResult> Register(RegisterUserDto registerUserDto){
             try{
                 if(!ModelState.IsValid) return BadRequest(ModelState);
                 
@@ -29,6 +30,30 @@ namespace Taller1_WebMovil.Src.Controller
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginUserDto loginUserDto){
+            try{
+                if(!ModelState.IsValid) return BadRequest(ModelState);
+
+                var response = await _authService.Login(loginUserDto);
+
+                if(response is null) return BadRequest("Datos incorrectos.");
+                    return Ok(response);
+                }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            // Cerrar la sesión del usuario
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+
+            // Redirigir al usuario a la página de inicio de sesión
+            return RedirectToAction("login");
+        }
+
 
         
     }

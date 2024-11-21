@@ -24,6 +24,15 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
             return user;
         }
 
+        public async Task<bool> VerifyEnableUserByEmail(string Email)
+        {
+            var user = await _context.Users.Where(u => u.Email == Email && u.enable == true).FirstOrDefaultAsync();
+            if(user == null){
+                return false;
+            }
+            return true;
+        }
+
         public async Task<bool> VerifyUserByEMail(string Email)
         {
             var user = await _context.Users.Where(u => u.Email == Email && u.enable == true).FirstOrDefaultAsync();
