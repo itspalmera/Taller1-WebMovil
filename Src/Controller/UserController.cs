@@ -27,21 +27,43 @@ namespace Taller1_WebMovil.Src.Controller
         [HttpPut("EditUser/{rut}")]
         public ActionResult<string> EditUser(string rut, [FromBody] EditUserDto editUser)
         {
-            var result = _userService.EditUser(rut, editUser).Result;
-            if(!result){
-                return NotFound("El usuario no existe en el sistema.");
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var result = _userService.EditUser(rut, editUser).Result;
+                if (!result)
+                {
+                    return NotFound("El usuario no existe en el sistema.");
+                }
+                return Ok("El usuario se editó correctamente.");
+
             }
-            return Ok("El usuario se editó correctamente.");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+
         }
         [Authorize]
         [HttpPut("ChangePassword/{rut}")]
         public ActionResult<string> ChangePassword(string rut, [FromBody]ChangePasswordDto changePassword){
 
-            var result = _userService.ChangePassword(rut, changePassword).Result;
-            if(!result){
-                return NotFound("No se pudo cambiar la contraseña al usuario.");
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var result = _userService.ChangePassword(rut, changePassword).Result;
+                if (!result)
+                {
+                    return NotFound("No se pudo cambiar la contraseña al usuario.");
+                }
+                return Ok("La contraseña se modificó correctamente.");
+
             }
-            return Ok("La contraseña se modificó correctamente.");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }
