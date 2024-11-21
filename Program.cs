@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Taller1_WebMovil.Src.Data;
 using Taller1_WebMovil.Src.Models;
+using Taller1_WebMovil.Src.Repositories.Implements;
+using Taller1_WebMovil.Src.Repositories.Interfaces;
+using Taller1_WebMovil.Src.Services.Implements;
+using Taller1_WebMovil.Src.Services.Interfaces;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +20,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<ITokenService,TokenService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddIdentity<User, IdentityRole>(
     opt =>{

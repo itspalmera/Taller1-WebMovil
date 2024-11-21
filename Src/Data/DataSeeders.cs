@@ -59,7 +59,7 @@ namespace Taller1_WebMovil.Src.Data
                         {
                             Console.WriteLine(error.Description);
                         }
-                        }
+                    }
                 }
                 //Se guardan los cambios
                 await serviceProvider.GetRequiredService<ApplicationDbContext>().SaveChangesAsync();
