@@ -11,6 +11,8 @@ using Taller1_WebMovil.Src.Services.Interfaces;
 
 namespace Taller1_WebMovil.Src.Controller
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class AuthController :ControllerBase
     {
         private readonly IAuthService _authService;
