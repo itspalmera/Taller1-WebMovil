@@ -33,5 +33,12 @@ namespace Taller1_WebMovil.Src.Services.Implements
             var result = await _userRepository.EditUser(rut, editUser);
             return result;
         }
+
+        public async Task<string> ToggleUserState(string rut)
+        {
+            var result = await _userRepository.ToggleUserState(rut);
+            return result;
+
+        }
     }
 }

@@ -41,13 +41,13 @@ namespace Taller1_WebMovil.Src.Data
                         rut = "20.416.699-4", 
                         name = "Ignacio Mancilla",
                         birthDate = new DateOnly(2000,10,25), 
-                        Email = "admin@idwm.cl.",
-                        UserName="admin@idwm.cl.",
+                        Email = "admin@idwm.cl",
+                        UserName="admin@idwm.cl",
                         genderId = 1,
                         enable = true,
                     };
                     //Asignamos la contraseña al usuario.
-                    var result = await userManager.CreateAsync(user, "P4ssw0rd!");
+                    var result = await userManager.CreateAsync(user, "P4ssw0rd");
                     if (result.Succeeded)
                     {
                         // Asignamos el rol de "Administrador".

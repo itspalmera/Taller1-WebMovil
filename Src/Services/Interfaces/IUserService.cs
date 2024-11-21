@@ -11,5 +11,6 @@ namespace Taller1_WebMovil.Src.Services.Interfaces
     {
         Task<bool> EditUser(string rut, EditUserDto editUser);
         Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto);
+        Task<string> ToggleUserState(string rut);
     }
 }

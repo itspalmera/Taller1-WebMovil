@@ -65,6 +65,20 @@ namespace Taller1_WebMovil.Src.Controller
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize(Roles = "Administrador")]
+        [HttpPut("ToggleUserState/{rut}")]
+        public ActionResult<string> ToggleUserState(string rut){
+            try
+            {
+                var result = _userService.ToggleUserState(rut);
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
     }
 }

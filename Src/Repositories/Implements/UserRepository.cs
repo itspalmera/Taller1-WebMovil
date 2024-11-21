@@ -83,6 +83,25 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
             return user;
         }
 
+        public async Task<string> ToggleUserState(string rut)
+        {
+            var user = await _context.Users.Where(u=> u.rut == rut).FirstOrDefaultAsync();
+            if(user == null){
+                return "El usuario no existe en el sistema.";
+            }
+            string result;
+            if(user.enable == true){
+                user.enable = false;
+                result ="El usuario ha sido deshabilitado exitosamente.";
+            }else{
+                user.enable = true;
+                result ="El usuario ha sido habilitado exitosamente.";
+            }
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return result;
+        }
+
         public async Task<bool> VerifyEnableUserByEmail(string Email)
         {
             var user = await _context.Users.Where(u => u.Email == Email && u.enable == true).FirstOrDefaultAsync();

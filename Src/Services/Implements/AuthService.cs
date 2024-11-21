@@ -40,7 +40,7 @@ namespace Taller1_WebMovil.Src.Services.Implements
             if (userRegistered)
             {
                 var user = await _userRepository.GetUserByEmail(registerUserDto.email);
-                var token = _tokenService.CreateToken(user);
+                var token = await _tokenService.CreateToken(user);
 
                 return token;
             }
@@ -60,7 +60,7 @@ namespace Taller1_WebMovil.Src.Services.Implements
             var verify = await _userRepository.VerifyEnableUserByEmail(loginUserDto.email.ToString());
             if (verify is false) return message2;
 
-            var token = _tokenService.CreateToken(user);
+            var token = await _tokenService.CreateToken(user);
             return token;
 
         }
