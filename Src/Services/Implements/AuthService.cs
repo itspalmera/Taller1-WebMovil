@@ -32,24 +32,24 @@ namespace Taller1_WebMovil.Src.Services.Implements
 
         public async Task<string> RegisterUser([FromBody] RegisterUserDto registerUserDto)
         {
-                if(_userRepository.VerifyUserByEMail(registerUserDto.email).Result){
-                    throw new Exception("El email ingresado ya existe.");
-                }
-                var userDto = registerUserDto.ToUser();
-
-                //Le asignamos la contraseña al usuario.
-                await _userManager.CreateAsync(userDto, registerUserDto.password);
-                // Asignamos el rol de "Cliente".
-                await _userManager.AddToRoleAsync(userDto, "Cliente");
-                var user = await _userRepository.GetUserByEmail(userDto.Email);
+            if (_userRepository.VerifyUserByEMail(registerUserDto.email).Result)
+            {
+                throw new Exception("El email ingresado ya existe.");
+            }
+            var userRegistered = await _userRepository.AddUser(registerUserDto);
+            if (userRegistered)
+            {
+                var user = await _userRepository.GetUserByEmail(registerUserDto.email);
                 var token = _tokenService.CreateToken(user);
 
                 return token;
+            }
+            throw new Exception("No se pudo registrar el usuario.");
         }
         public async Task<string> Login(LoginUserDto loginUserDto)
         {
             string message = "Los datos ingresados son incorrectos.";
-            string message2 = "El usuario esta deshabilitado.";
+            string message2 = "El usuario está deshabilitado.";
 
             var user = await _userRepository.GetUserByEmail(loginUserDto.email.ToString());
             if (user is null) return message;

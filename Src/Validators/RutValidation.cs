@@ -14,35 +14,35 @@ namespace Taller1_WebMovil.Src.Validators
 
             if (value == null)
             {
-                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)");
+                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)1");
             }
             //Comprueba que este en un formato 1.111.111-1 o 11.111.111-1
-            if (!Regex.IsMatch(value.ToString(), @"^\d{1,2}\.\d{3}\.\d{3}-\d{1}$"))
+            if (!Regex.IsMatch(value.ToString(), @"^\d{1,2}\.\d{3}\.\d{3}-[\dKk]{1}$"))
             {
-                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)");
+                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)2 ${value}");
             }
             //Quita los . del rut y comprueba que contenga solo numeros 0 al 9, k y -
             var rut = value.ToString()?.Replace(".", "").ToUpper();;
             if (!Regex.IsMatch(rut, @"^[0-9\.\-kK]+$"))
             {
-                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)");
+                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)3");
             }
             //divide el rut desde el - y verifica que no hayan mas de 2 grupos
             string[] rutParts = rut.Split('-');
             if (rutParts.Length != 2)
             {
-                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)");
+                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)4");
             }
             string digitVerificator = rutParts[1];
             string digitRut = rutParts[0];
 
             if (digitVerificator.Length != 1)
             {
-                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)");
+                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)5");
             }
             if (!Regex.IsMatch(digitRut, @"^[0-9]+$"))
             {
-                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)");
+                return new ValidationResult($"El rut no tiene el formato correcto. (Ejemplo: 11.111.111-1)6");
             }
             //Dar vuelta el rut
             string rutInverse = "";
