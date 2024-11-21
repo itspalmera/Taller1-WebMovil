@@ -37,7 +37,31 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
            return true;
         }
 
-        
+        public async Task<bool> EditUser(string rut, EditUserDto editUser)
+        {
+            var user = await _context.Users.Where(u => u.rut == rut).FirstOrDefaultAsync();
+            if (user == null){
+                return false;
+            }
+
+            user.name = editUser.name ?? user.name;
+
+            //En el caso de que el campo birthDate de el dto editUser este vacio, null o no tenga una fecha valida, se mantendra la fecha que se tenia antes.
+            if (!string.IsNullOrEmpty(editUser.birthDate) && DateOnly.TryParseExact(editUser.birthDate, "dd/MM/yyyy", out var parsedDate))
+            {
+                user.birthDate = parsedDate;
+            }
+            //En el caso de que el campo gender de el dto editUser este vacio, null o no se pueda transformar a int, se mantendra el dato que se tenia antes.
+            if (!string.IsNullOrEmpty(editUser.genderId) && int.TryParse(editUser.genderId, out var parsedGender))
+            {
+                user.genderId = parsedGender;
+            }
+
+            _context.Entry(user).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
 
         public async Task<User?> GetUserByEmail(string Email)
         {

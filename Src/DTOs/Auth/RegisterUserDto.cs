@@ -30,7 +30,7 @@ namespace Taller1_WebMovil.Src.DTOs.Auth
 
         [Required(ErrorMessage = "El campo Género es obligatorio.")]
         [GenderValidation]
-        public string gender {get; set;} = string.Empty;
+        public string genderId {get; set;} = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
         [RegularExpression(@"^(?=.*[0-9])(?=.*[a-zA-Z])[a-zA-Z0-9]+$", ErrorMessage = "La contraseña debe ser alfanumérica.")]

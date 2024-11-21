@@ -19,7 +19,7 @@ namespace Taller1_WebMovil.Src.Mapper
             birthDate = DateOnly.ParseExact(userDto.birthDate, "dd/MM/yyyy"),
             Email = userDto.email.ToLower(),
             UserName = userDto.email.ToLower(),
-            genderId = int.Parse(userDto.gender),
+            genderId = int.Parse(userDto.genderId),
             enable = true
         };
         }
