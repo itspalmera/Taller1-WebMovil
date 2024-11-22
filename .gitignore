@@ -485,7 +485,7 @@ $RECYCLE.BIN/
 
 appsettings.json
 
-
+#db
 .sqlite
 *.db
 *.db-shm
