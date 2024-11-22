@@ -198,6 +198,9 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                     b.Property<int>("categoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("enabled")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("image")
                         .IsRequired()
                         .HasColumnType("TEXT");

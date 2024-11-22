@@ -11,8 +11,8 @@ using Taller1_WebMovil.Src.Data;
 namespace Taller1_WebMovil.Src.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241119173007_RolesAndDataseeders")]
-    partial class RolesAndDataseeders
+    [Migration("20241122213214_initialcreate")]
+    partial class initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -199,6 +199,9 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("categoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("enabled")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("image")

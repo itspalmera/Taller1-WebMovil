@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Taller1_WebMovil.Src.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class updateDataBase : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -100,6 +102,7 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                     price = table.Column<int>(type: "INTEGER", nullable: false),
                     stock = table.Column<int>(type: "INTEGER", nullable: false),
                     image = table.Column<string>(type: "TEXT", nullable: false),
+                    enabled = table.Column<bool>(type: "INTEGER", nullable: false),
                     categoryId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -265,6 +268,15 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         principalTable: "PurchaseReceipts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "Administrador", "ADMINISTRADOR" },
+                    { "2", null, "Cliente", "CLIENTE" }
                 });
 
             migrationBuilder.CreateIndex(
