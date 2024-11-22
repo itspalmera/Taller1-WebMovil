@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.IdentityModel.Tokens;
 using Taller1_WebMovil.Src.Data;
 using Taller1_WebMovil.Src.DTOs.Auth;
 using Taller1_WebMovil.Src.DTOs.User;
@@ -83,12 +85,26 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
             return user;
         }
 
+        public async Task<bool> isAdmin(string id)
+        {
+            var role = await _context.UserRoles.Where(ur => ur.UserId == id).FirstOrDefaultAsync();
+            if(role.RoleId == "1"){
+                return true;
+            }
+            return false;
+        }
+
         public async Task<string> ToggleUserState(string rut)
         {
             var user = await _context.Users.Where(u=> u.rut == rut).FirstOrDefaultAsync();
             if(user == null){
                 return "El usuario no existe en el sistema.";
+            }            
+            var role = await _context.UserRoles.Where(ur => ur.UserId == user.Id).FirstOrDefaultAsync();
+            if(role.RoleId == "1"){
+                return "El administrador no se puede deshabilitar.";
             }
+            
             string result;
             if(user.enable == true){
                 user.enable = false;
@@ -118,6 +134,42 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
                 return false;
             }
             return true;
+        }
+
+        public async Task<IEnumerable<User?>> ViewAllUser(int page,int pageSize)
+        {
+            var administrador = await _context.UserRoles.Where(ur => ur.RoleId == "1").FirstOrDefaultAsync();
+            int totalUser = await _context.Users.CountAsync(u=> u.Id != administrador.UserId);
+            if (page < 1) page = 1;
+            if (pageSize <2) page =2;
+            int maxPage = (int)Math.Ceiling((Double)totalUser/page);
+            if (page>maxPage) page = maxPage;
+
+
+            var users = await _context.Users.Where(u=> u.Id != administrador.UserId)
+                                            .Include(u => u.gender)
+                                            .Skip((page - 1) * pageSize)
+                                            .Take(pageSize)
+                                            .ToListAsync();
+            return users;   
+        }
+
+        public async Task<IEnumerable<User?>> SearchUser(int page,string value,int pageSize)
+        {
+            var administrador = await _context.UserRoles.Where(ur => ur.RoleId == "1").FirstOrDefaultAsync();
+            int totalUser = await _context.Users.CountAsync(u=> u.Id != administrador.UserId);
+            if (page < 1) page = 1;
+            if (pageSize <2) page =2;
+            int maxPage = (int)Math.Ceiling((Double)totalUser/page);
+            if (page>maxPage) page = maxPage;
+
+
+            var users = await _context.Users.Where(u=> u.Id != administrador.UserId&& u.name.ToLower().Contains(value.ToLower()))
+                                            .Include(u => u.gender)
+                                            .Skip((page - 1) * pageSize)
+                                            .Take(pageSize)
+                                            .ToListAsync();
+            return users;   
         }
     }
 }

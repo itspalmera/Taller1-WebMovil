@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Taller1_WebMovil.Src.DTOs.Auth;
+using Taller1_WebMovil.Src.DTOs.User;
 using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Mapper
@@ -22,6 +23,16 @@ namespace Taller1_WebMovil.Src.Mapper
             genderId = int.Parse(userDto.genderId),
             enable = true
         };
+        }
+        public static UserDto toUserDto(this User user){
+            return new UserDto{
+                rut= user.rut,
+                name = user.name,
+                birthDate = user.birthDate.ToString("dd/MM/yyyy").Replace("-","/"),
+                email = user.Email,
+                gender = user.gender.name,
+                enable= user.enable ? "Habilitado" : "Deshabilitado"
+            };
         }
     }
 }

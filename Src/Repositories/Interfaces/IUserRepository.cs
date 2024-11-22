@@ -18,5 +18,7 @@ namespace Taller1_WebMovil.Src.Repositories.Interfaces
         Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto);
         Task<bool> AddUser(RegisterUserDto registerUserDto);
         Task<string> ToggleUserState(string rut);
+        Task<IEnumerable<User?>> SearchUser(int page,string value, int pageSize);
+        Task<IEnumerable<User?>> ViewAllUser(int page, int pageSize);
     }
 }

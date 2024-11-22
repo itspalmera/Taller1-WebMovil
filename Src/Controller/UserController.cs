@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Sprache;
 using Taller1_WebMovil.Src.DTOs.User;
+using Taller1_WebMovil.Src.Models;
 using Taller1_WebMovil.Src.Services.Implements;
 using Taller1_WebMovil.Src.Services.Interfaces;
 
@@ -70,6 +72,7 @@ namespace Taller1_WebMovil.Src.Controller
         public ActionResult<string> ToggleUserState(string rut){
             try
             {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
                 var result = _userService.ToggleUserState(rut);
                 return Ok(result);
 
@@ -78,6 +81,44 @@ namespace Taller1_WebMovil.Src.Controller
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [Authorize(Roles = "Administrador")]
+        [HttpGet("ViewUser/{page}")]
+        public ActionResult<IEnumerable<UserDto?>> ViewAllUser(int page, int pageSize)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var result = _userService.ViewAllUser(page,pageSize);
+                return Ok(result);
+                
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+
+        }
+        [Authorize(Roles = "Administrador")]
+        [HttpGet("ViewUser/{page}value")]
+        public ActionResult<IEnumerable<UserDto?>> SearchUser(int page, string value, int pageSize)
+        {
+
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var result = _userService.SearchUser(page,value,pageSize);
+                return Ok(result);
+                
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
         }
 
     }
