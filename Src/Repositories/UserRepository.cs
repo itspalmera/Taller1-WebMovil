@@ -141,7 +141,7 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
             var administrador = await _context.UserRoles.Where(ur => ur.RoleId == "1").FirstOrDefaultAsync();
             int totalUser = await _context.Users.CountAsync(u=> u.Id != administrador.UserId);
             if (page < 1) page = 1;
-            if (pageSize <2) page =2;
+            if (pageSize <2) pageSize =2;
             int maxPage = (int)Math.Ceiling((Double)totalUser/page);
             if (page>maxPage) page = maxPage;
 
@@ -159,7 +159,7 @@ namespace Taller1_WebMovil.Src.Repositories.Implements
             var administrador = await _context.UserRoles.Where(ur => ur.RoleId == "1").FirstOrDefaultAsync();
             int totalUser = await _context.Users.CountAsync(u=> u.Id != administrador.UserId);
             if (page < 1) page = 1;
-            if (pageSize <2) page =2;
+            if (pageSize <10) pageSize =10;
             int maxPage = (int)Math.Ceiling((Double)totalUser/page);
             if (page>maxPage) page = maxPage;
 
