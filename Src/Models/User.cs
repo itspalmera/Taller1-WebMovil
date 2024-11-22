@@ -15,12 +15,12 @@ namespace Taller1_WebMovil.Src.Models
          [Required]
         public string name { get; set; } = string.Empty;
          [Required]
-        public DateTime birthDate { get; set; }
+        public DateOnly birthDate { get; set; }
          [Required]
         public string email { get; set; } = string.Empty;
          [Required]
         public string password { get; set; } = string.Empty;
-        public bool enable { get; set; }
+        public bool enabled { get; set; }
 
 
         //Relaciones

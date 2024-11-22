@@ -17,6 +17,7 @@ namespace Taller1_WebMovil.Src.Models
         public int stock { get; set; }
         [Required]
         public string image {get; set;}
+        public bool enabled { get; set; }
 
         //Relaciones
 

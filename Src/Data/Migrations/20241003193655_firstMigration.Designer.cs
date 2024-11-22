@@ -124,7 +124,7 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("purchaseDate")
+                    b.Property<DateOnly>("purchaseDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("street")
@@ -160,7 +160,7 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("birthDate")
+                    b.Property<DateOnly>("birthDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("email")

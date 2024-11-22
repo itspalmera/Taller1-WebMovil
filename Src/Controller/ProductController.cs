@@ -11,7 +11,8 @@ using Taller1_WebMovil.Src.DTOs.Products;
 
 namespace Taller1_WebMovil.Src.Controller
 {
-
+    [Route("api/[controller]")]
+    [ApiController]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
@@ -27,16 +28,16 @@ namespace Taller1_WebMovil.Src.Controller
         //UPDATE actualizar un recurso 🡪 PUT
         //DELETE eliminar un recurso 🡪 DELETE
 
-        //Add product
+        //TODO: Add product
         [HttpPost("")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
         {
             //Check if the product already exists
-            bool nameExists = await _productRepository.ExistsByCode(createProductDto.name);
-            bool categoryExists = await _productRepository.ExistsByCode(createProductDto.category.name);
+            bool nameExists = await _productRepository.ExistsByName(createProductDto.name);
+            //TODO: Check if the category exists
 
-            if(nameExists || categoryExists)
+            if(nameExists)
             {
                 return Conflict(new {message = "El producto ya existe"});
             }
@@ -57,9 +58,67 @@ namespace Taller1_WebMovil.Src.Controller
             return CreatedAtAction(nameof(GetProductById), new {id = newProduct.id}, newProduct);
 
         }
-        
 
-    
+        //TODO: Get por id
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProductById(int id)
+        {
+            var product = await _productRepository.GetProductByIdAsync(id);
+            if(product == null)
+            {
+                return NotFound();
+            }
+            return Ok(product);
+        }
+
+        //TODO: Get all products
+        [HttpGet("")]
+        public async Task<IActionResult> GetAllProducts([FromQuery] string? text,[FromQuery] string? category, [FromQuery] string? sort)
+        {
+            //var products = await _productRepository.GetAllProductsAsync(category);
+
+            var products = await _productRepository.GetAllProductsAsync(text, category, sort);
+            return Ok(products);
+        }
+        
+        //TODO: Update product
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto updateProductDto)
+        {
+            var product = await _productRepository.GetProductByIdAsync(id);
+            if(product == null)
+            {
+                return NotFound(new {message = "El producto no existe"});
+            }
+
+            //Update the product
+            product.name = updateProductDto.name;
+            product.price = updateProductDto.price;
+            product.stock = updateProductDto.stock;
+            product.image = updateProductDto.image;
+            product.category = updateProductDto.category;
+
+            await _productRepository.UpdateProductAsync(product);
+            return Ok(new {message = "Producto actualizado"});
+        }
+
+        //TODO: Delete product
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var product = await _productRepository.GetProductByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound(new { message = "El producto no existe" });
+            }
+
+            // Marca el producto como eliminado
+            product.enabled = true; 
+            await _productRepository.UpdateProductAsync(product); 
+            return Ok(new { message = "Producto marcado como eliminado" });
+        }
 
 
     }

@@ -47,7 +47,7 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                     city = table.Column<string>(type: "TEXT", nullable: false),
                     district = table.Column<string>(type: "TEXT", nullable: false),
                     street = table.Column<string>(type: "TEXT", nullable: false),
-                    purchaseDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    purchaseDate = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     totalPrice = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -99,7 +99,7 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     rut = table.Column<string>(type: "TEXT", nullable: false),
                     name = table.Column<string>(type: "TEXT", nullable: false),
-                    birthDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    birthDate = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     email = table.Column<string>(type: "TEXT", nullable: false),
                     password = table.Column<string>(type: "TEXT", nullable: false),
                     enable = table.Column<bool>(type: "INTEGER", nullable: false),

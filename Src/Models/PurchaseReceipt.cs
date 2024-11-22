@@ -18,7 +18,7 @@ namespace Taller1_WebMovil.Src.Models
         public string district { get; set; }
         [Required]
         public string street { get; set; }
-        public DateTime purchaseDate { get; set; }
+        public DateOnly purchaseDate { get; set; }
         public int totalPrice { get; set; }
     }
 }

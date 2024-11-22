@@ -43,11 +43,11 @@ namespace Taller1_WebMovil.Src.Data
                     var user = new User { 
                         rut = "20.416.699-4", 
                         name = "Ignacio Mancilla",
-                        birthDate = new DateTime(2000,10,25), 
+                        birthDate = new DateOnly(2000,10,25), 
                         email = "admin@idwm.cl.",
                         genderId = 1,
                         password = "P4ssw0rd",
-                        enable = true,
+                        enabled = true,
                         roleId = 1
                     };
                     context.Users.Add(user);

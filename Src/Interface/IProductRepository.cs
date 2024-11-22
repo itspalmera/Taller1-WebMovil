@@ -8,10 +8,10 @@ namespace Taller1_WebMovil.Src.Interface
 {
     public interface IProductRepository
     {
-        Task<bool> ExistsByCode(string code);
+        Task<bool> ExistsByName(string name);
         Task<Product> AddProductAsync(Product product);
-        //Task<Product?> GetUserByIdAsync(int id);
-        Task<List<Product>> GetAllProductsAsync(string? category);
+        Task<Product?> GetProductByIdAsync(int id);
+        Task<List<Product>> GetAllProductsAsync(string? text, string? category, string? sort);
         Task DeleteProductAsync(Product product);
         Task UpdateProductAsync(Product product);
     }
