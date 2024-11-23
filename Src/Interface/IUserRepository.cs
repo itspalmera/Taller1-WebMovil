@@ -7,7 +7,7 @@ using Taller1_WebMovil.Src.DTOs.Auth;
 using Taller1_WebMovil.Src.DTOs.User;
 using Taller1_WebMovil.Src.Models;
 
-namespace Taller1_WebMovil.Src.Repositories.Interfaces
+namespace Taller1_WebMovil.Src.Interface
 {
     public interface IUserRepository
     {

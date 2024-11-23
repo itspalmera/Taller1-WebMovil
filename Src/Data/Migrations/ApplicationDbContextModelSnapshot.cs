@@ -281,6 +281,27 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                     b.ToTable("PurchaseReceipts");
                 });
 
+            modelBuilder.Entity("Taller1_WebMovil.Src.Models.ShoppingCart", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("userId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id", "productId");
+
+                    b.HasIndex("productId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("ShoppingCarts");
+                });
+
             modelBuilder.Entity("Taller1_WebMovil.Src.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -449,6 +470,25 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                     b.Navigation("product");
 
                     b.Navigation("purchaseReceipt");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("Taller1_WebMovil.Src.Models.ShoppingCart", b =>
+                {
+                    b.HasOne("Taller1_WebMovil.Src.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("productId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Taller1_WebMovil.Src.Models.User", "user")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("product");
 
                     b.Navigation("user");
                 });

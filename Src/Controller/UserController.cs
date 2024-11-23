@@ -83,7 +83,7 @@ namespace Taller1_WebMovil.Src.Controller
             }
         }
         [Authorize(Roles = "Administrador")]
-        [HttpGet("ViewUser/{page}")]
+        [HttpGet("ViewAllUser/{page}")]
         public ActionResult<IEnumerable<UserDto?>> ViewAllUser(int page, int pageSize)
         {
             try
@@ -102,7 +102,7 @@ namespace Taller1_WebMovil.Src.Controller
 
         }
         [Authorize(Roles = "Administrador")]
-        [HttpGet("ViewUser/{page}value")]
+        [HttpGet("SearchUser/{page}value")]
         public ActionResult<IEnumerable<UserDto?>> SearchUser(int page, string value, int pageSize)
         {
 

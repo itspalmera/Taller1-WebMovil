@@ -9,11 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 using Taller1_WebMovil.Src.Data;
 using Taller1_WebMovil.Src.DTOs.Auth;
 using Taller1_WebMovil.Src.DTOs.User;
+using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Mapper;
 using Taller1_WebMovil.Src.Models;
-using Taller1_WebMovil.Src.Repositories.Interfaces;
 
-namespace Taller1_WebMovil.Src.Repositories.Implements
+namespace Taller1_WebMovil.Src.Repositories
 {
     public class UserRepository : IUserRepository
     {

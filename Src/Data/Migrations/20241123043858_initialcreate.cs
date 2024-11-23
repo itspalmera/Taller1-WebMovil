@@ -270,6 +270,31 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ShoppingCarts",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    productId = table.Column<int>(type: "INTEGER", nullable: false),
+                    userId = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShoppingCarts", x => new { x.id, x.productId });
+                    table.ForeignKey(
+                        name: "FK_ShoppingCarts_AspNetUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ShoppingCarts_Products_productId",
+                        column: x => x.productId,
+                        principalTable: "Products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -335,6 +360,16 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "IX_Purchases_userId",
                 table: "Purchases",
                 column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCarts_productId",
+                table: "ShoppingCarts",
+                column: "productId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShoppingCarts_userId",
+                table: "ShoppingCarts",
+                column: "userId");
         }
 
         /// <inheritdoc />
@@ -359,16 +394,19 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "Purchases");
 
             migrationBuilder.DropTable(
+                name: "ShoppingCarts");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "PurchaseReceipts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "PurchaseReceipts");
 
             migrationBuilder.DropTable(
                 name: "Genders");

@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Taller1_WebMovil.Src.DTOs.User;
 using Taller1_WebMovil.Src.Mapper;
 using Taller1_WebMovil.Src.Models;
-using Taller1_WebMovil.Src.Repositories.Interfaces;
 using Taller1_WebMovil.Src.Services.Interfaces;
-using Taller1_WebMovil.Src.Mapper;
 using Microsoft.IdentityModel.Tokens;
+using Taller1_WebMovil.Src.Interface;
 
 namespace Taller1_WebMovil.Src.Services.Implements
 {
