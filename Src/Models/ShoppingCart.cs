@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Taller1_WebMovil.Src.Models
 {
-    [PrimaryKey(nameof(id),nameof(productId))]
+    [PrimaryKey(nameof(id),nameof(cartItemId))]
     public class ShoppingCart
     {
         public int id {get; set;}
@@ -14,7 +14,7 @@ namespace Taller1_WebMovil.Src.Models
         public string userId { get; set; }
         public User user { get; set; }= null!;
 
-        public int productId { get; set; }
-        public Product product { get; set; } = null!;
+        public int cartItemId { get; set; }
+        public CartItem cartItem { get; set; } = null!;
     }
 }

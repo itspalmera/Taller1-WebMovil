@@ -38,5 +38,6 @@ namespace Taller1_WebMovil.Src.Data
         public DbSet<Category> Categories {get; set;} = null!;
         public DbSet<PurchaseReceipt> PurchaseReceipts {get; set;} = null!;
         public DbSet<ShoppingCart> ShoppingCarts { get; set; } = null!;
+        public DbSet<CartItem> CartItems { get; set; } = null!;
     }
 }

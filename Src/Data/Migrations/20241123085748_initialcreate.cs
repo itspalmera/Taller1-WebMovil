@@ -153,6 +153,26 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    quantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    productId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_CartItems_Products_productId",
+                        column: x => x.productId,
+                        principalTable: "Products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -275,12 +295,12 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(type: "INTEGER", nullable: false),
-                    productId = table.Column<int>(type: "INTEGER", nullable: false),
+                    cartItemId = table.Column<int>(type: "INTEGER", nullable: false),
                     userId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShoppingCarts", x => new { x.id, x.productId });
+                    table.PrimaryKey("PK_ShoppingCarts", x => new { x.id, x.cartItemId });
                     table.ForeignKey(
                         name: "FK_ShoppingCarts_AspNetUsers_userId",
                         column: x => x.userId,
@@ -288,9 +308,9 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ShoppingCarts_Products_productId",
-                        column: x => x.productId,
-                        principalTable: "Products",
+                        name: "FK_ShoppingCarts_CartItems_cartItemId",
+                        column: x => x.cartItemId,
+                        principalTable: "CartItems",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -347,6 +367,11 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_productId",
+                table: "CartItems",
+                column: "productId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_categoryId",
                 table: "Products",
                 column: "categoryId");
@@ -362,9 +387,9 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 column: "userId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ShoppingCarts_productId",
+                name: "IX_ShoppingCarts_cartItemId",
                 table: "ShoppingCarts",
-                column: "productId");
+                column: "cartItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingCarts_userId",
@@ -406,10 +431,13 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "CartItems");
 
             migrationBuilder.DropTable(
                 name: "Genders");
+
+            migrationBuilder.DropTable(
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Categories");
