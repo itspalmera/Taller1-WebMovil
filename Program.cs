@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Taller1_WebMovil.Src.Data;
+using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Models;
-using Taller1_WebMovil.Src.Repositories.Implements;
-using Taller1_WebMovil.Src.Repositories.Interfaces;
+using Taller1_WebMovil.Src.Repositories;
 using Taller1_WebMovil.Src.Services.Implements;
 using Taller1_WebMovil.Src.Services.Interfaces;
 
@@ -25,6 +25,13 @@ builder.Services.AddScoped<ITokenService,TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService,UserService>();
+builder.Services.AddScoped<IPurchaseService, PurchaseService>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
+builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<IProductRepository,ProductRepository>();
+
 
 builder.Services.AddIdentity<User, IdentityRole>(
     opt =>{

@@ -24,15 +24,24 @@ namespace Taller1_WebMovil.Src.Controller
         {
             _userService = userService;
         }
-        
+
+        /// <summary>
+        /// Edits a user's information.
+        /// </summary>
+        /// <param name="rut">The user rut.</param>
+        /// <param name="editUserDto">The updated user details.</param>
+        /// <returns>A confirmation message.</returns>
+        /// <response code="200">Returns a confirmation message.</response>
+        /// <response code="400">If there was an error with the request.</response>
+        /// <response code="404">If the user is not found.</response>
         [Authorize]
         [HttpPut("EditUser/{rut}")]
-        public ActionResult<string> EditUser(string rut, [FromBody] EditUserDto editUser)
+        public ActionResult<string> EditUser(string rut, [FromBody] EditUserDto editUserDto)
         {
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-                var result = _userService.EditUser(rut, editUser).Result;
+                var result = _userService.EditUser(rut, editUserDto).Result;
                 if (!result)
                 {
                     return NotFound("El usuario no existe en el sistema.");
@@ -47,14 +56,24 @@ namespace Taller1_WebMovil.Src.Controller
 
 
         }
+
+        /// <summary>
+        /// Changes a user's password.
+        /// </summary>
+        /// <param name="rut">The user rut.</param>
+        /// <param name="changePasswordDto">The new password details.</param>
+        /// <returns>A confirmation message.</returns>
+        /// <response code="200">Returns a confirmation message.</response>
+        /// <response code="400">If there was an error with the request.</response>
+        /// <response code="404">If the user is not found.</response>
         [Authorize]
         [HttpPut("ChangePassword/{rut}")]
-        public ActionResult<string> ChangePassword(string rut, [FromBody]ChangePasswordDto changePassword){
+        public ActionResult<string> ChangePassword(string rut, [FromBody]ChangePasswordDto changePasswordDto){
 
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-                var result = _userService.ChangePassword(rut, changePassword).Result;
+                var result = _userService.ChangePassword(rut, changePasswordDto).Result;
                 if (!result)
                 {
                     return NotFound("No se pudo cambiar la contraseña al usuario.");
@@ -67,6 +86,14 @@ namespace Taller1_WebMovil.Src.Controller
                 return BadRequest(ex.Message);
             }
         }
+        /// <summary>
+        /// Changes the state of a user.
+        /// </summary>
+        /// <param name="rut">The user rut.</param>
+        /// <returns>A confirmation message.</returns>
+        /// <response code="200">Returns a confirmation message.</response>
+        /// <response code="400">If there was an error with the request.</response>
+        /// <response code="404">If the user was not found.</response>
         [Authorize(Roles = "Administrador")]
         [HttpPut("ToggleUserState/{rut}")]
         public ActionResult<string> ToggleUserState(string rut){
@@ -82,8 +109,17 @@ namespace Taller1_WebMovil.Src.Controller
                 return BadRequest(ex.Message);
             }
         }
+        
+        /// <summary>
+        /// Retrieves a paginated list of all users.
+        // </summary>
+        /// <param name="page">The current page number.</param>
+        /// <param name="pageSize">The number of users per page.</param>
+        /// <returns>A paginated list of users.</returns>
+        /// <response code="200">Returns the list of users.</response>
+        /// <response code="400">If there was an error with the request.</response>
         [Authorize(Roles = "Administrador")]
-        [HttpGet("ViewUser/{page}")]
+        [HttpGet("ViewAllUser/{page}")]
         public ActionResult<IEnumerable<UserDto?>> ViewAllUser(int page, int pageSize)
         {
             try
@@ -101,15 +137,25 @@ namespace Taller1_WebMovil.Src.Controller
             
 
         }
+
+        /// <summary>
+        /// Searches for users by name and retrieves a paginated result.
+        /// </summary>
+        /// <param name="page">The current page number.</param>
+        /// <param name="name">The search term to filter users.</param>
+        /// <param name="pageSize">The number of users per page.</param>
+        /// <returns>A paginated list of users matching the search criteria.</returns>
+        /// <response code="200">Returns the list of users matching the search.</response>
+        /// <response code="400">If there was an error with the request.</response>
         [Authorize(Roles = "Administrador")]
-        [HttpGet("ViewUser/{page}value")]
-        public ActionResult<IEnumerable<UserDto?>> SearchUser(int page, string value, int pageSize)
+        [HttpGet("SearchUser/{page}name")]
+        public ActionResult<IEnumerable<UserDto?>> SearchUser(int page, string name, int pageSize)
         {
 
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-                var result = _userService.SearchUser(page,value,pageSize);
+                var result = _userService.SearchUser(page,name,pageSize);
                 return Ok(result);
                 
 

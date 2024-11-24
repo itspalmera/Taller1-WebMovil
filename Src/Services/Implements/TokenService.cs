@@ -29,7 +29,7 @@ namespace Taller1_WebMovil.Src.Services.Implements
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
 
            var claims = new List<Claim>{
-            new Claim(JwtRegisteredClaimNames.NameId, user.rut!),
+            new Claim(JwtRegisteredClaimNames.NameId, user.Id!),
             new Claim(JwtRegisteredClaimNames.Name, user.name!),
             new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName!),
             new Claim(ClaimTypes.Role, role)
@@ -39,7 +39,7 @@ namespace Taller1_WebMovil.Src.Services.Implements
 
            var tokenDescriptor = new SecurityTokenDescriptor{
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
+            Expires = DateTime.Now.AddDays(1),
             SigningCredentials = creds,
             Issuer = _config["JWT:Issuer"],
             Audience = _config["JWT:Audience"]
