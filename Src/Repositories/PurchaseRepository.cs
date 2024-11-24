@@ -34,7 +34,7 @@ namespace Taller1_WebMovil.Src.Repositories
         {
             int totalPurchase = await _context.Purchases.CountAsync();
             if (page < 1) page = 1;
-            if (pageSize <2) pageSize =2;
+            if (pageSize <10) pageSize =10;
             int maxPage = (int)Math.Ceiling((Double)totalPurchase/page);
             if (page>maxPage) page = maxPage;
 
@@ -64,7 +64,7 @@ namespace Taller1_WebMovil.Src.Repositories
         {
             int totalPurchase = await _context.Purchases.CountAsync();
             if (page < 1) page = 1;
-            if (pageSize <2) pageSize =2;
+            if (pageSize <10) pageSize =10;
             int maxPage = (int)Math.Ceiling((Double)totalPurchase/page);
             if (page>maxPage) page = maxPage;
 
