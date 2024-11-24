@@ -10,18 +10,14 @@ namespace Taller1_WebMovil.Src.Mapper
 {
     public static class ShoppingCartMapper
     {
-        public static ShoppingCartInfoDto toShoppingCartDto(this ShoppingCart shoppingCart){
-            return new ShoppingCartInfoDto{
-            productId = shoppingCart.cartItem.productId.ToString(),
-            productName =shoppingCart.cartItem.product.name.ToString(),
-            quantiy = shoppingCart.cartItem.quantity.ToString()
-            };
-        }
-        public static ShoppingCart toShoppingCart(this ShoppingCartDto shoppingCartDto){
-            return new ShoppingCart{
-                userId = shoppingCartDto.userId,
-                cartItemId = shoppingCartDto.cartItemId
-            };
-        }
+        public static ShoppingCartInfoDto ToShoppingCartInfoDto(this CartItem cartItem)
+    {
+        return new ShoppingCartInfoDto
+        {
+            productId = cartItem.productId.ToString(),
+            productName = cartItem.Product?.name,
+            quantiy = cartItem.quantity.ToString()
+        };
+    } 
     }
 }

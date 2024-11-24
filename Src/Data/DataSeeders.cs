@@ -9,43 +9,79 @@ namespace Taller1_WebMovil.Src.Data
 {
     public class DataSeeders
     {
-        public static async void Iniialize(IServiceProvider serviceProvider){
-            using (var scope = serviceProvider.CreateScope()){
+        public static async void Iniialize(IServiceProvider serviceProvider)
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicationDbContext>();
                 var userManager = services.GetRequiredService<UserManager<User>>();  // Obtén el UserManager
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();  // Obtén el RoleManager
 
-               if(!context.Genders.Any()){
+                if (!context.Genders.Any())
+                {
                     context.Genders.AddRange(
-                        new Gender {name = "Femenino"},
-                        new Gender {name = "Masculino"},
-                        new Gender {name = "Prefiero no decirlo"},                        
-                        new Gender {name = "Otro"}
+                        new Gender { name = "Femenino" },
+                        new Gender { name = "Masculino" },
+                        new Gender { name = "Prefiero no decirlo" },
+                        new Gender { name = "Otro" }
                     );
                 }
-                if(!context.Categories.Any()){
+                if (!context.Categories.Any())
+                {
                     context.Categories.AddRange(
-                        new Category {name = "Poleras"},
-                        new Category {name = "Gorros"},
-                        new Category {name = "Juguetería"},
-                        new Category {name = "Alimentación"},
-                        new Category {name = "Libros"}
+                        new Category { name = "Poleras" },
+                        new Category { name = "Gorros" },
+                        new Category { name = "Juguetería" },
+                        new Category { name = "Alimentación" },
+                        new Category { name = "Libros" }
                     );
                 }
                 context.SaveChanges();
-
-                if(!context.Users.Any())
+                if (!context.Products.Any())
                 {
-                    var user = new User { 
-                        rut = "20.416.699-4", 
+                    context.Products.AddRange(
+                        new Product {
+                            name = "Polera pique azul",
+                            price = 15000,
+                            stock = 80,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 1
+                        },
+                        new Product {
+                            name = "Gorro lana azul",
+                            price = 8000,
+                            stock = 80,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 2
+                        },
+                        new Product {
+                            name = "Polera pique verde",
+                            price = 16000,
+                            stock = 80,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 1
+                        }
+                    );
+                    context.SaveChanges();
+                }
+
+                if (!context.Users.Any())
+                {
+                    var user = new User
+                    {
+                        rut = "20.416.699-4",
                         name = "Ignacio Mancilla",
-                        birthDate = new DateOnly(2000,10,25), 
+                        birthDate = new DateOnly(2000, 10, 25),
                         Email = "admin@idwm.cl",
-                        UserName="admin@idwm.cl",
+                        UserName = "admin@idwm.cl",
                         genderId = 1,
                         enable = true,
                     };
+
                     //Asignamos la contraseña al usuario.
                     var result = await userManager.CreateAsync(user, "P4ssw0rd");
                     if (result.Succeeded)
@@ -64,7 +100,7 @@ namespace Taller1_WebMovil.Src.Data
                 //Se guardan los cambios
                 await serviceProvider.GetRequiredService<ApplicationDbContext>().SaveChangesAsync();
             }
-            
+
         }
     }
 }

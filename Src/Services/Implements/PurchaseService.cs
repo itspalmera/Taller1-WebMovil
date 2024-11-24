@@ -14,10 +14,12 @@ namespace Taller1_WebMovil.Src.Services.Implements
     public class PurchaseService : IPurchaseService
     {
         private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IUserRepository _userRepository;
 
-        public PurchaseService(IPurchaseRepository purchaseRepository)
+        public PurchaseService(IPurchaseRepository purchaseRepository,IUserRepository userRepository)
         {
             _purchaseRepository = purchaseRepository;
+            _userRepository = userRepository;
         }
 
         public async Task<IEnumerable<PurchaseInfoDto?>> SearchPurchase(int page, string name, int pageSize,bool sort)
@@ -33,6 +35,15 @@ namespace Taller1_WebMovil.Src.Services.Implements
         {
            var listPurchases = await _purchaseRepository.ViewAllPurchase(page,pageSize,sort);
            var purchaseDto = listPurchases.Select(p => p!.toPurchaseDto()).ToList();
+            return purchaseDto;
+        }
+
+        public async Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string rut){
+            var user = await _userRepository.GetUserByRut(rut);
+            if(user == null) return null;
+            var listPurchases = await _purchaseRepository.ViewAllPurchaseClient(page,pageSize,user);
+
+            var purchaseDto = listPurchases.Select(p => p!.toPurchaseInfoClientDto()).ToList();
             return purchaseDto;
         }
     }

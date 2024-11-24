@@ -10,5 +10,6 @@ namespace Taller1_WebMovil.Src.Services.Interfaces
     {
         Task<IEnumerable<PurchaseInfoDto?>> SearchPurchase(int page, string name, int pageSize,bool sort);
         Task<IEnumerable<PurchaseInfoDto?>> ViewAllPurchase(int page, int pageSize,bool sort);
+        Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string rut);
     }
 }

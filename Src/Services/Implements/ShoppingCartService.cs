@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +30,7 @@ namespace Taller1_WebMovil.Src.Services.Implements
         public async Task<IEnumerable<ShoppingCartInfoDto?>> GetCartItems(string userId)
         {
             var listCartItems = await _shoppingCartRepository.GetCartItems(userId);
-            var cartItemsDto = listCartItems.Select(sc => sc!.toShoppingCartDto()).ToList();
-            return cartItemsDto;
+            return listCartItems;
         }
     }
 }

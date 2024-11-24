@@ -5,7 +5,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Taller1_WebMovil.Src.DTOs;
+using Taller1_WebMovil.Src.DTOs.ShoppingCart;
 using Taller1_WebMovil.Src.Interface;
+using Taller1_WebMovil.Src.Mapper;
 using Taller1_WebMovil.Src.Models;
 using Taller1_WebMovil.Src.Services.Interfaces;
 
@@ -18,13 +20,19 @@ namespace Taller1_WebMovil.Src.Controller
         private const string CartCookieKey = "GuestCart";
         private readonly IShoppingCartService _shoppingCartService;
         private readonly ICartItemRepository _cartItemRepository;
+        private readonly IProductRepository _productRepository;
 
-        public ShoppingCartController(IShoppingCartService shoppingCartService,ICartItemRepository cartItemRepository)
+        public ShoppingCartController(IShoppingCartService shoppingCartService,ICartItemRepository cartItemRepository,IProductRepository productRepository)
         {
             _shoppingCartService = shoppingCartService;
             _cartItemRepository = cartItemRepository;
+            _productRepository = productRepository;
         }
-
+        /// <summary>
+        /// Retrieves the items in the user's shopping cart.
+        /// </summary>
+        /// <returns>The list of items in the cart.</returns>
+        /// <response code="200">Returns the items in the cart.</response>
         [HttpGet("GetCartItems")]
         public async Task<IActionResult> GetCartItems()
         {
@@ -42,7 +50,13 @@ namespace Taller1_WebMovil.Src.Controller
                 return Ok(cart);
             }
         }
-
+        /// <summary>
+        /// Adds an item to the user's shopping cart.
+        /// </summary>
+        /// <param name="cartItemDto">The item to be added to the cart.</param>
+        /// <returns>A message indicating the result of the operation.</returns>
+        /// <response code="200">Returns a success message.</response>
+        /// <response code="400">If the quantity is invalid or the product does not exist.</response>
         [HttpPost("AddToCart")]
         public async Task<IActionResult> AddToCart([FromBody] CartItemDto cartItemDto)
         {
@@ -50,91 +64,126 @@ namespace Taller1_WebMovil.Src.Controller
             {
                 // Usuario registrado: agregar al carrito en la base de datos
                 var userId = GetUserId();
+                //Crear metodo para poder ver si hay alguna cookie con informacion, si hay, se actualiza el carrito y se elimina la cookie
+                //si no, no hacer nada.
+
                 var cartItem = await _cartItemRepository.AddToCart(userId, cartItemDto);
+                if(!cartItem) return NotFound("El producto ingresado no existe.");
             }
             else
             {
-                // Usuario no registrado: manejar carrito en cookies
+                // Usuario no registrado: agregar a las cookies
+                var cookieValue = Request.Cookies[CartCookieKey];
+                // Obtener o crear un GUID para el usuario no autenticado
                 var userGuid = GetOrCreateUserGuid();
-                var cart = GetCartFromCookies();
 
-                // Buscar si el producto ya está en el carrito
-                var existingItem = cart.FirstOrDefault(c => c.productId == cartItemDto.productId);
+                // Obtener los productos del carrito desde las cookies
+                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
+
+                // Verificar si el producto ya existe en el carrito
+                var existingItem = cartItems.FirstOrDefault(item => item.productId == cartItemDto.productId);
+
                 if (existingItem != null)
                 {
-                    // Si ya está, actualizar la cantidad
+                    if(existingItem.quantity+cartItemDto.quantiy <1)
+                    // Eliminar el item del carrito si la cantidad es menor que 1
+                    cartItems.Remove(existingItem);
+                    else{
                     existingItem.quantity += cartItemDto.quantiy;
+                    }   
                 }
                 else
                 {
-                    // Si no está, agregar un nuevo ítem al carrito
+                    if(cartItemDto.quantiy<1)return BadRequest("La cantidad no puede ser menor a 1.");
+                    // Si el producto no está en el carrito, agregarlo como un nuevo item
                     var newCartItem = new CartItem
                     {
-                        id = cart.Count > 0 ? cart.Max(c => c.id) + 1 : 1, // Asignar un ID único
                         productId = cartItemDto.productId,
+                        Product = await _productRepository.GetProductByIdAsync(cartItemDto.productId),
                         quantity = cartItemDto.quantiy
-                        
                     };
+                    string nameProduct = newCartItem.Product.name;
 
-                    cart.Add(newCartItem);
+                    cartItems.Add(newCartItem);
                 }
-
                 // Guardar el carrito actualizado en las cookies
-                SaveCartToCookies(userGuid, cart);
+                SaveCartItemsToCookies(userGuid, cartItems);
             }
-            return Ok("Producto agregado al carrito");
+            if(cartItemDto.quantiy<0){
+                return Ok($"Se eliminaron ${-1*cartItemDto.quantiy} del carrito");
+            }else{return Ok("Producto agregado al carrito");}
         }
-
-        [HttpDelete("DeleteCartItem/{id}")]
-        public async Task<ActionResult> DeleteCartItem(int id)
+        /// <summary>
+        /// Removes an item from the user's shopping cart.
+        /// </summary>
+        /// <param name="idProduct">The ID of the product to be removed.</param>
+        /// <returns>A message indicating the result of the operation.</returns>
+        /// <response code="200">Returns a success message.</response>
+        /// <response code="400">If the item does not exist in the cart.</response>
+        [HttpDelete("DeleteCartItem/{idProduct}")]
+        public async Task<ActionResult> DeleteCartItem(int idProduct)
         {
             // Comprobar si el usuario está autenticado
             if (User.Identity?.IsAuthenticated == true)
             {
                 // El usuario está autenticado: trabajar con la base de datos
                 var userId = GetUserId();
-                var shoppingCart = _shoppingCartService.DeleteCartItem(userId,id);
+                var shoppingCart =await _cartItemRepository.DeleteCartItem(userId,idProduct);
+                if(!shoppingCart)return BadRequest("No se pudo eliminar el producto, ya que no se encuentra en su carrito.");
+                
             }
             else
             {
-                // Usuario no autenticado: trabajar con cookies
+               // Usuario no registrado: agregar a las cookies
+                var cookieValue = Request.Cookies[CartCookieKey];
+                // Obtener o crear un GUID para el usuario no autenticado
                 var userGuid = GetOrCreateUserGuid();
 
-                // Obtener los items del carrito desde las cookies
-                var cartItems = GetCartItemsFromCookies(userGuid);
+                // Obtener los productos del carrito desde las cookies
+                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>(); 
+                // Verificar si el producto ya existe en el carrito
+                var existingItem = cartItems.FirstOrDefault(item => item.productId == idProduct);
 
-                // Buscar el ticket a eliminar
-                var cartItemToRemove = cartItems.FirstOrDefault(ci => ci.id == id);
-
-                if (cartItemToRemove == null)
+                if (existingItem == null)
                 {
-                    return NotFound("El ticket no se encuentra en el carrito.");
+                    return BadRequest("No se pudo eliminar el producto, ya que no se encuentra en su carrito.");
                 }
-
-                // Eliminar el item del carrito
-                cartItems.Remove(cartItemToRemove);
-
-                // Guardar los cambios en las cookies
-                SaveCartToCookies(userGuid, cartItems);
+                cartItems.Remove(existingItem);
+                // Guardar el carrito actualizado en las cookies
+                SaveCartItemsToCookies(userGuid, cartItems);
             }
 
-            return NoContent();
+            return Ok("Se eliminó el producto.");
         }
 
-
+        /// <summary>
+        /// Retrieves the authenticated user's ID.
+        /// </summary>
+        /// <returns>The user's ID.</returns>
         private string GetUserId()
         {
             return User.Identity?.Name ?? throw new InvalidOperationException("El usuario no está autenticado");
         }
-        
-        private List<CartItem> GetCartFromCookies()
+        /// <summary>
+        /// Retrieves the shopping cart items from the cookies.
+        /// </summary>
+        /// <returns>A list of shopping cart items.</returns>
+        private List<ShoppingCartInfoDto> GetCartFromCookies()
         {
             var cookieValue = Request.Cookies[CartCookieKey];
-            return string.IsNullOrEmpty(cookieValue)
-                ? new List<CartItem>()
-                : JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
+            // Deserializar el carrito de las cookies
+            var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
+
+            // Mapear los CartItems a ShoppingCartInfoDto
+            var cartItemsDto = cartItems.Select(cartItem => ShoppingCartMapper.ToShoppingCartInfoDto(cartItem)).ToList();
+            return cartItemsDto;
         }
-        private void SaveCartToCookies(string userGuid,List<CartItem> cart)
+        /// <summary>
+        /// Saves the shopping cart items to the cookies.
+        /// </summary>
+        /// <param name="userGuid">The user's GUID.</param>
+        /// <param name="cart">The list of cart items to save.</param>
+        private void SaveCartItemsToCookies(string userGuid,List<CartItem> cart)
         {
             var serializedCart = JsonSerializer.Serialize(cart);
             var cookieOptions = new CookieOptions
@@ -149,11 +198,9 @@ namespace Taller1_WebMovil.Src.Controller
         }
 
         /// <summary>
-        /// Obtiene o crea un GUID para el usuario actual.
+        /// Retrieves or creates a GUID for the user.
         /// </summary>
-        /// <returns>
-        /// El GUID del usuario.
-        /// </returns>
+        /// <returns>The user's GUID.</returns>
         private string GetOrCreateUserGuid()
         {
             var userGuid = Request.Cookies[CartCookieKey];
@@ -175,22 +222,18 @@ namespace Taller1_WebMovil.Src.Controller
         }
 
         /// <summary>
-        /// Obtiene los cartItems del usuario mediante su GUID.
+        /// Retrieves the user's shopping cart items from cookies using their GUID.
         /// </summary>
-        /// <param name="userGuid">
-        /// El GUID del usuario.
-        /// </param>
-        /// <returns>
-        /// La lista de cartItems del usuario.
-        /// </returns>
+        /// <param name="userGuid">The unique identifier (GUID) of the user.</param>
+        /// <returns>A list of shopping cart items (<see cref="CartItem"/>). Returns an empty list if no items are found.</returns>
         private List<CartItem> GetCartItemsFromCookies(string userGuid)
         {
             var cookieValue = Request.Cookies[CartCookieKey + "_" + userGuid];
             if (!string.IsNullOrEmpty(cookieValue))
             {
-                return JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? [];
+                return JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
             }
-            return [];
+            return new List<CartItem>();;
         }
 
         

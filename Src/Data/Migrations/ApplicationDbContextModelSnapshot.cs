@@ -165,15 +165,23 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("price")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("productId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("quantity")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("shoppingCartId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("id");
 
                     b.HasIndex("productId");
+
+                    b.HasIndex("shoppingCartId");
 
                     b.ToTable("CartItems");
                 });
@@ -303,18 +311,14 @@ namespace Taller1_WebMovil.Src.Data.Migrations
             modelBuilder.Entity("Taller1_WebMovil.Src.Models.ShoppingCart", b =>
                 {
                     b.Property<int>("id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("cartItemId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("userId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("id", "cartItemId");
-
-                    b.HasIndex("cartItemId");
+                    b.HasKey("id");
 
                     b.HasIndex("userId");
 
@@ -457,13 +461,21 @@ namespace Taller1_WebMovil.Src.Data.Migrations
 
             modelBuilder.Entity("Taller1_WebMovil.Src.Models.CartItem", b =>
                 {
-                    b.HasOne("Taller1_WebMovil.Src.Models.Product", "product")
+                    b.HasOne("Taller1_WebMovil.Src.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("product");
+                    b.HasOne("Taller1_WebMovil.Src.Models.ShoppingCart", "ShoppingCart")
+                        .WithMany("Items")
+                        .HasForeignKey("shoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ShoppingCart");
                 });
 
             modelBuilder.Entity("Taller1_WebMovil.Src.Models.Product", b =>
@@ -506,19 +518,11 @@ namespace Taller1_WebMovil.Src.Data.Migrations
 
             modelBuilder.Entity("Taller1_WebMovil.Src.Models.ShoppingCart", b =>
                 {
-                    b.HasOne("Taller1_WebMovil.Src.Models.CartItem", "cartItem")
-                        .WithMany()
-                        .HasForeignKey("cartItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Taller1_WebMovil.Src.Models.User", "user")
                         .WithMany()
                         .HasForeignKey("userId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("cartItem");
 
                     b.Navigation("user");
                 });
@@ -532,6 +536,11 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("gender");
+                });
+
+            modelBuilder.Entity("Taller1_WebMovil.Src.Models.ShoppingCart", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

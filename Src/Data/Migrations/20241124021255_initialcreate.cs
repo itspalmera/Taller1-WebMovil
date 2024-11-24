@@ -153,26 +153,6 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CartItems",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    productId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CartItems", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_CartItems_Products_productId",
-                        column: x => x.productId,
-                        principalTable: "Products",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -294,23 +274,45 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "ShoppingCarts",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    cartItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
                     userId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShoppingCarts", x => new { x.id, x.cartItemId });
+                    table.PrimaryKey("PK_ShoppingCarts", x => x.id);
                     table.ForeignKey(
                         name: "FK_ShoppingCarts_AspNetUsers_userId",
                         column: x => x.userId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CartItems",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    quantity = table.Column<int>(type: "INTEGER", nullable: false),
+                    price = table.Column<int>(type: "INTEGER", nullable: false),
+                    shoppingCartId = table.Column<int>(type: "INTEGER", nullable: false),
+                    productId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartItems", x => x.id);
                     table.ForeignKey(
-                        name: "FK_ShoppingCarts_CartItems_cartItemId",
-                        column: x => x.cartItemId,
-                        principalTable: "CartItems",
+                        name: "FK_CartItems_Products_productId",
+                        column: x => x.productId,
+                        principalTable: "Products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CartItems_ShoppingCarts_shoppingCartId",
+                        column: x => x.shoppingCartId,
+                        principalTable: "ShoppingCarts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -372,6 +374,11 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 column: "productId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartItems_shoppingCartId",
+                table: "CartItems",
+                column: "shoppingCartId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_categoryId",
                 table: "Products",
                 column: "categoryId");
@@ -385,11 +392,6 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "IX_Purchases_userId",
                 table: "Purchases",
                 column: "userId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ShoppingCarts_cartItemId",
-                table: "ShoppingCarts",
-                column: "cartItemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ShoppingCarts_userId",
@@ -416,13 +418,19 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CartItems");
+
+            migrationBuilder.DropTable(
                 name: "Purchases");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "ShoppingCarts");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "PurchaseReceipts");
@@ -431,16 +439,10 @@ namespace Taller1_WebMovil.Src.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "CartItems");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Genders");
-
-            migrationBuilder.DropTable(
-                name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
         }
     }
 }
