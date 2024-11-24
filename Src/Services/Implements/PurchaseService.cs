@@ -38,13 +38,24 @@ namespace Taller1_WebMovil.Src.Services.Implements
             return purchaseDto;
         }
 
-        public async Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string rut){
-            var user = await _userRepository.GetUserByRut(rut);
-            if(user == null) return null;
+        public async Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string email){
+            var user = await _userRepository.GetUserByEmail(email);
+            
+            if(user == null){
+             return null;
+            }
             var listPurchases = await _purchaseRepository.ViewAllPurchaseClient(page,pageSize,user);
 
             var purchaseDto = listPurchases.Select(p => p!.toPurchaseInfoClientDto()).ToList();
             return purchaseDto;
+        }
+
+        public async Task<bool> ProcessPurchase(NewPurchaseDto newPurchaseDto,string email){
+            User user = await _userRepository.GetUserByEmail(email);
+            if(user == null) return false;
+            var result = await _purchaseRepository.ProcessPurchase(newPurchaseDto,user);
+            return result;
+
         }
     }
 }

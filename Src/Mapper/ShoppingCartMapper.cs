@@ -16,7 +16,7 @@ namespace Taller1_WebMovil.Src.Mapper
         {
             productId = cartItem.productId.ToString(),
             productName = cartItem.Product?.name,
-            quantiy = cartItem.quantity.ToString()
+            quantity = cartItem.quantity.ToString()
         };
     } 
     }
