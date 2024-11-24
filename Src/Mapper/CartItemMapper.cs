@@ -13,7 +13,7 @@ namespace Taller1_WebMovil.Src.Mapper
 
             return new CartItem
         {
-            quantity = cartItemDto.quantiy,
+            quantity = cartItemDto.quantity,
             productId = cartItemDto.productId
         };
         }

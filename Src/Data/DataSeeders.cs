@@ -41,7 +41,8 @@ namespace Taller1_WebMovil.Src.Data
                 if (!context.Products.Any())
                 {
                     context.Products.AddRange(
-                        new Product {
+                        new Product
+                        {
                             name = "Polera pique azul",
                             price = 15000,
                             stock = 80,
@@ -49,7 +50,8 @@ namespace Taller1_WebMovil.Src.Data
                             enabled = true,
                             categoryId = 1
                         },
-                        new Product {
+                        new Product
+                        {
                             name = "Gorro lana azul",
                             price = 8000,
                             stock = 80,
@@ -57,13 +59,77 @@ namespace Taller1_WebMovil.Src.Data
                             enabled = true,
                             categoryId = 2
                         },
-                        new Product {
+                        new Product
+                        {
                             name = "Polera pique verde",
                             price = 16000,
                             stock = 80,
                             image = "imagen",
                             enabled = true,
                             categoryId = 1
+                        },
+                        new Product
+                        {
+                            name = "Juguete de madera",
+                            price = 5000,
+                            stock = 50,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 3
+                        },
+                        new Product
+                        {
+                            name = "Pelota de fútbol",
+                            price = 3000,
+                            stock = 100,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 3
+                        },
+                        new Product
+                        {
+                            name = "Gorro de lana rojo",
+                            price = 7000,
+                            stock = 60,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 2
+                        },
+                        new Product
+                        {
+                            name = "Polera estampada amarilla",
+                            price = 12000,
+                            stock = 120,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 1
+                        },
+                        new Product
+                        {
+                            name = "Libro de cocina",
+                            price = 9000,
+                            stock = 50,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 5
+                        },
+                        new Product
+                        {
+                            name = "Polera con logo rojo",
+                            price = 18000,
+                            stock = 70,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 1
+                        },
+                        new Product
+                        {
+                            name = "Snack saludable",
+                            price = 2500,
+                            stock = 200,
+                            image = "imagen",
+                            enabled = true,
+                            categoryId = 4
                         }
                     );
                     context.SaveChanges();

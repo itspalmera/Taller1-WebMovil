@@ -85,22 +85,22 @@ namespace Taller1_WebMovil.Src.Controller
 
                 if (existingItem != null)
                 {
-                    if(existingItem.quantity+cartItemDto.quantiy <1)
+                    if(existingItem.quantity+cartItemDto.quantity <1)
                     // Eliminar el item del carrito si la cantidad es menor que 1
                     cartItems.Remove(existingItem);
                     else{
-                    existingItem.quantity += cartItemDto.quantiy;
+                    existingItem.quantity += cartItemDto.quantity;
                     }   
                 }
                 else
                 {
-                    if(cartItemDto.quantiy<1)return BadRequest("La cantidad no puede ser menor a 1.");
+                    if(cartItemDto.quantity<1)return BadRequest("La cantidad no puede ser menor a 1.");
                     // Si el producto no está en el carrito, agregarlo como un nuevo item
                     var newCartItem = new CartItem
                     {
                         productId = cartItemDto.productId,
                         Product = await _productRepository.GetProductByIdAsync(cartItemDto.productId),
-                        quantity = cartItemDto.quantiy
+                        quantity = cartItemDto.quantity
                     };
                     string nameProduct = newCartItem.Product.name;
 
@@ -109,8 +109,8 @@ namespace Taller1_WebMovil.Src.Controller
                 // Guardar el carrito actualizado en las cookies
                 SaveCartItemsToCookies(userGuid, cartItems);
             }
-            if(cartItemDto.quantiy<0){
-                return Ok($"Se eliminaron ${-1*cartItemDto.quantiy} del carrito");
+            if(cartItemDto.quantity<0){
+                return Ok($"Se eliminaron ${-1*cartItemDto.quantity} del carrito");
             }else{return Ok("Producto agregado al carrito");}
         }
         /// <summary>

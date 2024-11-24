@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Taller1_WebMovil.Src.DTOs.Purchase;
 using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Interface
@@ -35,5 +36,7 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="user">The client whose purchases are to be retrieved.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of purchases for the specified client.</returns>
         Task<IEnumerable<Purchase?>> ViewAllPurchaseClient(int page, int pageSize, User user);
+
+        Task<bool> ProcessPurchase(NewPurchaseDto newPurchaseDto,User user);
     }
 }
