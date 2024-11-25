@@ -14,9 +14,17 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Repositories
 {
+    /// <summary>
+    /// Repository for managing cart item operations.
+    /// </summary>
     public class CartItemRepository : ICartItemRepository
     {
         private readonly ApplicationDbContext _context;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CartItemRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application's database context.</param>
         public CartItemRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -67,11 +75,11 @@ namespace Taller1_WebMovil.Src.Repositories
             if (existingItem != null)
             {
                 // Si el producto ya está en el carrito, incrementar la cantidad
-                if(existingItem.quantity+cartItemDto.quantiy <1)
+                if(existingItem.quantity+cartItemDto.quantity <1)
                 // Eliminar el item del carrito si la cantidad es menor que 1
                 shoppingCart.Items.Remove(existingItem);
                 else{
-                existingItem.quantity += cartItemDto.quantiy;
+                existingItem.quantity += cartItemDto.quantity;
                 }
             }
             else
@@ -79,7 +87,7 @@ namespace Taller1_WebMovil.Src.Repositories
                  // Si el producto no está en el carrito, agregarlo como un nuevo ítem
                 CartItem newItem = new CartItem
                 {
-                    quantity = cartItemDto.quantiy,
+                    quantity = cartItemDto.quantity,
                     price = product.price, // Precio actual del producto
                     Product = product,
                     ShoppingCart = shoppingCart

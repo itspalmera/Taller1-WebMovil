@@ -11,17 +11,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Taller1_WebMovil.Src.Repositories
 {
+    /// <summary>
+    /// Repository implementation for managing product operations in the database.
+    /// </summary>
     public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDbContext _dataContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductRepository"/> class.
+        /// </summary>
+        /// <param name="datacontext">The application's database context.</param>
         public ProductRepository(ApplicationDbContext datacontext)
         {
             _dataContext = datacontext;
         }
 
 
-        //Add product to the database
+        /// <summary>
+        /// Adds a new product to the database.
+        /// </summary>
+        /// <param name="product">The product to add.</param>
+        /// <returns>The added product.</returns>
         public async Task<Product> AddProductAsync(Product product)
         {
             _dataContext.Products.Add(product);
@@ -30,7 +41,10 @@ namespace Taller1_WebMovil.Src.Repositories
         }
 
 
-        //Delete product from the database
+        /// <summary>
+        /// Deletes a product from the database.
+        /// </summary>
+        /// <param name="product">The product to delete.</param>
         public async Task DeleteProductAsync(Product product)
         {
             _dataContext.Products.Remove(product);
@@ -38,25 +52,46 @@ namespace Taller1_WebMovil.Src.Repositories
         }
 
 
-        //Update product in the database
+        /// <summary>
+        /// Updates an existing product in the database.
+        /// </summary>
+        /// <param name="product">The product to update.</param>
         public async Task UpdateProductAsync(Product product)
         {
             _dataContext.Products.Update(product);
             await _dataContext.SaveChangesAsync();
         }
 
+
+        /// <summary>
+        /// Checks if a product exists in the database by its name.
+        /// </summary>
+        /// <param name="name">The name of the product to check.</param>
+        /// <returns>True if the product exists; otherwise, false.</returns>
         public async Task<bool> ExistsByName(string name)
         {
             return await _dataContext.Products.AnyAsync(x => x.name == name);
         }
 
 
+        /// <summary>
+        /// Retrieves a product by its unique identifier.
+        /// </summary>
+        /// <param name="id">The product's identifier.</param>
+        /// <returns>The product, or null if it does not exist.</returns>
         public async Task<Product?> GetProductByIdAsync(int id)
         {
             return await _dataContext.Products.FindAsync(id);
         }
 
 
+        /// <summary>
+        /// Retrieves all products with optional filters for text, category, and sorting.
+        /// </summary>
+        /// <param name="text">Text to filter products by name.</param>
+        /// <param name="category">Category to filter products.</param>
+        /// <param name="sort">Sort order ("asc" for ascending, "desc" for descending) by price.</param>
+        /// <returns>A list of filtered and sorted products.</returns>
         public async Task<List<Product>> GetAllProductsAsync(string? text, string? category, string? sort)
         {
             var query = _dataContext.Products.AsQueryable();

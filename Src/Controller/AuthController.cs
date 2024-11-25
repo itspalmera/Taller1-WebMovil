@@ -11,11 +11,20 @@ using Taller1_WebMovil.Src.Services.Interfaces;
 
 namespace Taller1_WebMovil.Src.Controller
 {
+
+    /// <summary>
+    /// Controller for managing authentication operations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController :ControllerBase
     {
         private readonly IAuthService _authService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthController"/> class.
+        /// </summary>
+        /// <param name="authService">The authentication service to manage user operations.</param>
         public AuthController(IAuthService authService){
            _authService = authService;
         }

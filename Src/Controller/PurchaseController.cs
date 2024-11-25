@@ -16,6 +16,10 @@ namespace Taller1_WebMovil.Src.Controller
     {
         private readonly IPurchaseService _purchaseService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurchaseController"/> class.
+        /// </summary>
+        /// <param name="purchaseService">The service to handle purchase operations.</param>
         public PurchaseController(IPurchaseService purchaseService)
         {
             _purchaseService = purchaseService;

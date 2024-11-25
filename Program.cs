@@ -12,6 +12,7 @@ using Taller1_WebMovil.Src.Models;
 using Taller1_WebMovil.Src.Repositories;
 using Taller1_WebMovil.Src.Services.Implements;
 using Taller1_WebMovil.Src.Services.Interfaces;
+using Taller1_WebMovil.Src.Helpers;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -112,6 +113,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+builder.Services.Configure<CloudinarySettings>(
+	builder.Configuration.GetSection("CloudinarySettings")
+);
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

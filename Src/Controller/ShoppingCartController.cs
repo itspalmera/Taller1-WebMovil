@@ -13,6 +13,10 @@ using Taller1_WebMovil.Src.Services.Interfaces;
 
 namespace Taller1_WebMovil.Src.Controller
 {
+
+    /// <summary>
+    /// Controller for managing the user's shopping cart operations.
+    /// </summary
     [ApiController]
     [Route("api/[controller]")]
     public class ShoppingCartController : ControllerBase
@@ -22,6 +26,12 @@ namespace Taller1_WebMovil.Src.Controller
         private readonly ICartItemRepository _cartItemRepository;
         private readonly IProductRepository _productRepository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShoppingCartController"/> class.
+        /// </summary>
+        /// <param name="shoppingCartService">Service for handling shopping cart logic.</param>
+        /// <param name="cartItemRepository">Repository for managing cart items.</param>
+        /// <param name="productRepository">Repository for managing product data.</param>
         public ShoppingCartController(IShoppingCartService shoppingCartService,ICartItemRepository cartItemRepository,IProductRepository productRepository)
         {
             _shoppingCartService = shoppingCartService;
@@ -85,22 +95,22 @@ namespace Taller1_WebMovil.Src.Controller
 
                 if (existingItem != null)
                 {
-                    if(existingItem.quantity+cartItemDto.quantiy <1)
+                    if(existingItem.quantity+cartItemDto.quantity <1)
                     // Eliminar el item del carrito si la cantidad es menor que 1
                     cartItems.Remove(existingItem);
                     else{
-                    existingItem.quantity += cartItemDto.quantiy;
+                    existingItem.quantity += cartItemDto.quantity;
                     }   
                 }
                 else
                 {
-                    if(cartItemDto.quantiy<1)return BadRequest("La cantidad no puede ser menor a 1.");
+                    if(cartItemDto.quantity<1)return BadRequest("La cantidad no puede ser menor a 1.");
                     // Si el producto no está en el carrito, agregarlo como un nuevo item
                     var newCartItem = new CartItem
                     {
                         productId = cartItemDto.productId,
                         Product = await _productRepository.GetProductByIdAsync(cartItemDto.productId),
-                        quantity = cartItemDto.quantiy
+                        quantity = cartItemDto.quantity
                     };
                     string nameProduct = newCartItem.Product.name;
 
@@ -109,8 +119,8 @@ namespace Taller1_WebMovil.Src.Controller
                 // Guardar el carrito actualizado en las cookies
                 SaveCartItemsToCookies(userGuid, cartItems);
             }
-            if(cartItemDto.quantiy<0){
-                return Ok($"Se eliminaron ${-1*cartItemDto.quantiy} del carrito");
+            if(cartItemDto.quantity<0){
+                return Ok($"Se eliminaron ${-1*cartItemDto.quantity} del carrito");
             }else{return Ok("Producto agregado al carrito");}
         }
         /// <summary>

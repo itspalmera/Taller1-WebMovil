@@ -11,23 +11,31 @@ using Taller1_WebMovil.Src.DTOs.Products;
 
 namespace Taller1_WebMovil.Src.Controller
 {
+
+     /// <summary>
+    /// Controller for managing product operations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProductController"/> class.
+        /// </summary>
+        /// <param name="productRepository">Injected product repository for data management.</param>
         public ProductController(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
 
 
-        //CREATE crear un recurso 🡪 POST
-        //READ leer u obtener un recurso 🡪 GET
-        //UPDATE actualizar un recurso 🡪 PUT
-        //DELETE eliminar un recurso 🡪 DELETE
-
+        /// <summary>
+        /// Creates a new product.
+        /// </summary>
+        /// <param name="createProductDto">DTO containing product details to be created.</param>
+        /// <returns>An HTTP response indicating the result of the operation.</returns>
         //TODO: Add product
         [HttpPost("")]
         [Authorize(Roles = "Admin")]
@@ -59,6 +67,12 @@ namespace Taller1_WebMovil.Src.Controller
 
         }
 
+
+        /// <summary>
+        /// Retrieves a product by its unique identifier.
+        /// </summary>
+        /// <param name="id">The product's identifier.</param>
+        /// <returns>The requested product or a not found error if it does not exist.</returns>
         //TODO: Get por id
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
@@ -71,6 +85,13 @@ namespace Taller1_WebMovil.Src.Controller
             return Ok(product);
         }
 
+        /// <summary>
+        /// Retrieves all products with optional filters.
+        /// </summary>
+        /// <param name="text">Text to search within product names.</param>
+        /// <param name="category">Category filter for the products.</param>
+        /// <param name="sort">Sorting criteria for the products.</param>
+        /// <returns>A list of filtered and sorted products.</returns>
         //TODO: Get all products
         [HttpGet("")]
         public async Task<IActionResult> GetAllProducts([FromQuery] string? text,[FromQuery] string? category, [FromQuery] string? sort)
@@ -81,6 +102,13 @@ namespace Taller1_WebMovil.Src.Controller
             return Ok(products);
         }
         
+
+        /// <summary>
+        /// Updates an existing product.
+        /// </summary>
+        /// <param name="id">The identifier of the product to be updated.</param>
+        /// <param name="updateProductDto">DTO containing updated product details.</param>
+        /// <returns>An HTTP response indicating the result of the operation.</returns>
         //TODO: Update product
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
@@ -103,6 +131,11 @@ namespace Taller1_WebMovil.Src.Controller
             return Ok(new {message = "Producto actualizado"});
         }
 
+         /// <summary>
+        /// Marks a product as deleted.
+        /// </summary>
+        /// <param name="id">The identifier of the product to be deleted.</param>
+        /// <returns>An HTTP response indicating the result of the operation.</returns>
         //TODO: Delete product
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]

@@ -10,10 +10,17 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Repositories
 {
+    /// <summary>
+    /// Repository for managing purchase-related operations.
+    /// </summary>
     public class PurchaseRepository : IPurchaseRepository
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PurchaseRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application's database context.</param>
          public PurchaseRepository(ApplicationDbContext context)
         {
             _context = context;
