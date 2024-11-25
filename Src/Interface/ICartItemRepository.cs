@@ -7,6 +7,10 @@ using Taller1_WebMovil.Src.DTOs;
 
 namespace Taller1_WebMovil.Src.Interface
 {
+
+    /// <summary>
+    /// Interface for managing shopping cart items.
+    /// </summary>
     public interface ICartItemRepository
     {
         /// <summary>

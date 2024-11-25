@@ -14,7 +14,9 @@ using Taller1_WebMovil.Src.Services.Interfaces;
 
 namespace Taller1_WebMovil.Src.Services.Implements
 {
-    
+    /// <summary>
+    /// Service implementation for managing authentication-related operations.
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly ITokenService _tokenService;
@@ -22,6 +24,13 @@ namespace Taller1_WebMovil.Src.Services.Implements
         private readonly IUserRepository _userRepository;
         private readonly SignInManager<User> _signInManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthService"/> class.
+        /// </summary>
+        /// <param name="tokenService">Service for handling token generation.</param>
+        /// <param name="userManager">UserManager for managing user-related operations.</param>
+        /// <param name="userRepository">Repository for user-related data.</param>
+        /// <param name="signInManager">SignInManager for managing user sign-in operations.</param>
         public AuthService(ITokenService tokenService,UserManager<User> userManager, IUserRepository userRepository,SignInManager<User> signInManager){
             _tokenService = tokenService;
             _userManager = userManager;
@@ -29,6 +38,12 @@ namespace Taller1_WebMovil.Src.Services.Implements
             _signInManager = signInManager;
         }
 
+        /// <summary>
+        /// Registers a new user and returns an authentication token.
+        /// </summary>
+        /// <param name="registerUserDto">The user registration details.</param>
+        /// <returns>A string containing the authentication token.</returns>
+        /// <exception cref="Exception">Thrown if the email already exists or if registration fails.</exception>
         public async Task<string> RegisterUser([FromBody] RegisterUserDto registerUserDto)
         {
             if (_userRepository.VerifyUserByEMail(registerUserDto.email).Result)
@@ -45,6 +60,12 @@ namespace Taller1_WebMovil.Src.Services.Implements
             }
             throw new Exception("No se pudo registrar el usuario.");
         }
+
+        /// <summary>
+        /// Authenticates a user and returns an authentication token.
+        /// </summary>
+        /// <param name="loginUserDto">The user login details.</param>
+        /// <returns>A string containing the authentication token, or an error message if authentication fails.</returns>
         public async Task<string> Login(LoginUserDto loginUserDto)
         {
             string message = "Los datos ingresados son incorrectos.";

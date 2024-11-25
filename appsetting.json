@@ -5,5 +5,19 @@
         "Microsoft.AspNetCore": "Warning"
       }
     },
-    "AllowedHosts":"*"
-  }
+    "AllowedHosts":"*",
+
+  
+    "CloudinarySettings": {
+        "CloudName": "Taller1",
+        "ApiKey": "555686841738741",
+        "ApiSecret": "PIQXMPi6LdRyTqw0LJvH3j8cAoM"
+    },
+    
+    "JWT": {
+      "ValidAudience": "https://localhost:5177/",
+      "ValidIssuer": "https://localhost:5177/",
+      "Secret": "<TH6t+/cef5V6we0BP31Vh8nywjz7976Jjz1vdfivw8c=>"
+    }
+  
+}

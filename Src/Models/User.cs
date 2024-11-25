@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Identity;
 namespace Taller1_WebMovil.Src.Models
 {
     /// <summary>
-/// Represents a user in the system, inheriting from IdentityUser to include authentication features.
-/// </summary>
+    /// Represents a user in the system, inheriting from IdentityUser to include authentication features.
+    /// </summary>
 public class User : IdentityUser
 {
     /// <summary>

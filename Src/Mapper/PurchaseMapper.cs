@@ -8,8 +8,18 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Mapper
 {
+
+    /// <summary>
+    /// A static class to map objects related to purchases.
+    /// </summary>
     public static class PurchaseMapper
     {
+
+        /// <summary>
+        /// Maps a <see cref="Purchase"/> object to a <see cref="PurchaseInfoDto"/> object.
+        /// </summary>
+        /// <param name="purchase">The <see cref="Purchase"/> object to be mapped.</param>
+        /// <returns>A <see cref="PurchaseInfoDto"/> object containing the mapped data.</returns>
         public static PurchaseInfoDto toPurchaseDto(this Purchase purchase){
             return new PurchaseInfoDto{
             purchaseDate = purchase.purchaseReceipt.purchaseDate.ToString("dd/MM/yyyy").Replace("-","/"),
@@ -19,6 +29,12 @@ namespace Taller1_WebMovil.Src.Mapper
             totalPrice = purchase.purchaseReceipt.totalPrice.ToString(),
             };
         }
+
+        /// <summary>
+        /// Maps a <see cref="Purchase"/> object to a <see cref="PurchaseInfoClientDto"/> object.
+        /// </summary>
+        /// <param name="purchase">The <see cref="Purchase"/> object to be mapped.</param>
+        /// <returns>A <see cref="PurchaseInfoClientDto"/> object containing the mapped data.</returns>
         public static PurchaseInfoClientDto toPurchaseInfoClientDto(this Purchase purchase)
         {
 

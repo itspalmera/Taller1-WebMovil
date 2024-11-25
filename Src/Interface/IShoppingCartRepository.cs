@@ -8,6 +8,9 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Interface
 {
+    /// <summary>
+    /// Interface for managing shopping cart operations.
+    /// </summary>
     public interface IShoppingCartRepository
     {
         /// <summary>

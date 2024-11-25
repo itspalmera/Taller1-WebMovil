@@ -14,9 +14,17 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Repositories
 {
+    /// <summary>
+    /// Repository for managing cart item operations.
+    /// </summary>
     public class CartItemRepository : ICartItemRepository
     {
         private readonly ApplicationDbContext _context;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CartItemRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application's database context.</param>
         public CartItemRepository(ApplicationDbContext context)
         {
             _context = context;

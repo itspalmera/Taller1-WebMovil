@@ -7,8 +7,22 @@ using System.Threading.Tasks;
 
 namespace Taller1_WebMovil.Src.Validators
 {
+
+    /// <summary>
+    /// Custom validation attribute to validate the Chilean RUT (Rol Único Tributario).
+    /// </summary>
     public class RutValidation : ValidationAttribute
     {
+
+        /// <summary>
+        /// Validates the RUT format and checks the verification digit.
+        /// </summary>
+        /// <param name="value">The RUT value to validate.</param>
+        /// <param name="validationContext">The context in which the validation is performed.</param>
+        /// <returns>
+        /// A <see cref="ValidationResult"/> indicating whether the validation succeeded or failed.
+        /// Returns <see cref="ValidationResult.Success"/> if the validation passes, otherwise returns an error message.
+        /// </returns>
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
 

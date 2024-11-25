@@ -15,11 +15,20 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Repositories
 {
+
+    /// <summary>
+    /// Repository for managing user-related operations.
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application's database context.</param>
+        /// <param name="userManager">The user manager for managing user operations.</param>
          public UserRepository(ApplicationDbContext context,UserManager<User> userManager)
         {
             _context = context;

@@ -13,10 +13,18 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Repositories
 {
+
+    /// <summary>
+    /// Repository for managing shopping cart-related operations.
+    /// </summary>
     public class ShoppingCartRepository : IShoppingCartRepository
     {
         private readonly ApplicationDbContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShoppingCartRepository"/> class.
+        /// </summary>
+        /// <param name="context">The application's database context.</param>
         public ShoppingCartRepository(ApplicationDbContext context)
         {
             _context = context;

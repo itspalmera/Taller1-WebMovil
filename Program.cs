@@ -12,9 +12,14 @@ using Taller1_WebMovil.Src.Models;
 using Taller1_WebMovil.Src.Repositories;
 using Taller1_WebMovil.Src.Services.Implements;
 using Taller1_WebMovil.Src.Services.Interfaces;
+using Taller1_WebMovil.Src.Helpers;
 
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<CloudinarySettings>(
+	builder.Configuration.GetSection("CloudinarySettings")
+);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -112,6 +117,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

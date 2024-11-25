@@ -14,12 +14,20 @@ using Taller1_WebMovil.Src.Services.Interfaces;
 
 namespace Taller1_WebMovil.Src.Controller
 {
+
+    /// <summary>
+    /// Controller for managing user-related operations.
+    /// </summary
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserController"/> class.
+        /// </summary>
+        /// <param name="userService">The service used to handle user-related logic.</param>
         public UserController(IUserService userService)
         {
             _userService = userService;

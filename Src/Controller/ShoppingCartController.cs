@@ -13,6 +13,10 @@ using Taller1_WebMovil.Src.Services.Interfaces;
 
 namespace Taller1_WebMovil.Src.Controller
 {
+
+    /// <summary>
+    /// Controller for managing the user's shopping cart operations.
+    /// </summary
     [ApiController]
     [Route("api/[controller]")]
     public class ShoppingCartController : ControllerBase
@@ -22,6 +26,12 @@ namespace Taller1_WebMovil.Src.Controller
         private readonly ICartItemRepository _cartItemRepository;
         private readonly IProductRepository _productRepository;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShoppingCartController"/> class.
+        /// </summary>
+        /// <param name="shoppingCartService">Service for handling shopping cart logic.</param>
+        /// <param name="cartItemRepository">Repository for managing cart items.</param>
+        /// <param name="productRepository">Repository for managing product data.</param>
         public ShoppingCartController(IShoppingCartService shoppingCartService,ICartItemRepository cartItemRepository,IProductRepository productRepository)
         {
             _shoppingCartService = shoppingCartService;

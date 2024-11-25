@@ -6,8 +6,21 @@ using System.Threading.Tasks;
 
 namespace Taller1_WebMovil.Src.Validators
 {
+    /// <summary>
+    /// Custom validation attribute to validate age by checking the provided birth date.
+    /// </summary>
     public class AgeValidation : ValidationAttribute
     {
+
+         /// <summary>
+        /// Validates the provided birth date against the current date.
+        /// </summary>
+        /// <param name="value">The birth date value to validate.</param>
+        /// <param name="validationContext">The context in which the validation is performed.</param>
+        /// <returns>
+        /// A <see cref="ValidationResult"/> indicating whether the validation succeeded or failed.
+        /// Returns <see cref="ValidationResult.Success"/> if the validation passes, otherwise returns an error message.
+        /// </returns>
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if(value ==null){
@@ -32,9 +45,20 @@ namespace Taller1_WebMovil.Src.Validators
             }
         }
 
+        /// <summary>
+        /// Determines if a given year is a leap year.
+        /// </summary>
+        /// <param name="year">The year to check.</param>
         public bool IsLeapYear(int year){
             return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
         }
+
+        /// <summary>
+        /// Checks if a given string matches the specified date format.
+        /// </summary>
+        /// <param name="text">The date string to validate.</param>
+        /// <param name="format">The expected date format.</param>
+        /// <returns>True if the date string is invalid, otherwise false.</returns>
         public bool IsValidDateFormat(string text, string format)
         {
             DateTime date;

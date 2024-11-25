@@ -9,6 +9,9 @@ using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Interface
 {
+    /// <summary>
+    /// Interface for managing user-related operations.
+    /// </summary>
     public interface IUserRepository
     {
         /// <summary>
