@@ -61,11 +61,11 @@ builder.Services.AddAuthentication(
     opt=>{
         opt.TokenValidationParameters = new TokenValidationParameters{
             ValidateIssuer = true,
-            ValidIssuer = Environment.GetEnvironmentVariable("JWT__Issuer"),
+            ValidIssuer = Environment.GetEnvironmentVariable("JWT__Issuer")?? "http://localhost:5177",
             ValidateAudience = true,
-            ValidAudience = Environment.GetEnvironmentVariable("JWT__Audience"),
+            ValidAudience = Environment.GetEnvironmentVariable("JWT__Audience")?? "http://localhost:5177",
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT__SigningKey")  ?? throw new ArgumentNullException("JWT__SigningKey"))),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT__SigningKey")  ?? "llavesecreta123456789llave123456")),
         };
     }
 );

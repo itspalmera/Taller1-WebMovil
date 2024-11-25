@@ -32,6 +32,6 @@ namespace Taller1_WebMovil.Src.DTOs.ShoppingCart
         /// <value>
         /// A string representing the quantity of the product in the cart.
         /// </value>
-        public string quantiy { get; set; }
+        public string quantity { get; set; }
     }
 }

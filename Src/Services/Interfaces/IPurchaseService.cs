@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Taller1_WebMovil.Src.DTOs.Purchase;
 
+
 namespace Taller1_WebMovil.Src.Services.Interfaces
 {
     /// <summary>
@@ -41,5 +42,7 @@ namespace Taller1_WebMovil.Src.Services.Interfaces
         /// A list of purchases made by the specified user, represented as <see cref="PurchaseInfoClientDto"/> objects.
         /// </returns>
         Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string rut);
+
+        Task<bool> ProcessPurchase(NewPurchaseDto newPurchaseDto,string email);
     }
 }

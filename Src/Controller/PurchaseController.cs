@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -82,19 +83,19 @@ namespace Taller1_WebMovil.Src.Controller
         /// </summary>
         /// <param name="page">The current page number.</param>
         /// <param name="pageSize">The number of items per page.</param>
-        /// <param name="rut">The client's unique identifier (RUT).</param>
         /// <returns>A list of purchase information (<see cref="PurchaseInfoDto"/>).</returns>
         /// <response code="200">Returns the list of purchases for the client.</response>
         /// <response code="400">If the request is invalid.</response>
         /// <response code="404">If the client does not exist.</response>
         [Authorize(Roles = "Cliente")]
-        [HttpGet("ViewAllPurchaseClient/{rut}")]
-        public ActionResult<IEnumerable<PurchaseInfoDto?>> ViewAllPurchaseClient(int page, int pageSize,string rut)
+        [HttpGet("ViewAllPurchaseClient")]
+        public ActionResult<IEnumerable<PurchaseInfoDto?>> ViewAllPurchaseClient(int page, int pageSize)
         {
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-                var result = _purchaseService.ViewAllPurchaseClient(page,pageSize,rut);
+                var email = User.Identity?.Name;
+                var result = _purchaseService.ViewAllPurchaseClient(page,pageSize,email);
                 if(result==null)NotFound("El cliente no existe.");
                 return Ok(result);
                 
@@ -106,6 +107,33 @@ namespace Taller1_WebMovil.Src.Controller
             }
             
 
+        }
+
+        /// <summary>
+        /// Registers a new purchase.
+        /// </summary>
+        /// <param name="newPurchaseDto">The purchase  details.</param>
+        /// <returns>A confirmation message.</returns>
+        /// <response code="200">Returns the confirmation message.</response>
+        /// <response code="400">If there was an error with the request.</response>
+        [HttpPost("processPurchase")]
+        public async Task<ActionResult> ProcessPurchase([FromBody]NewPurchaseDto newPurchaseDto){
+
+            // Comprobar si el usuario está autenticado
+            if (User.Identity?.IsAuthenticated == true)
+            {
+            try{
+                if(!ModelState.IsValid) return BadRequest(ModelState);
+                var email = User.Identity?.Name;
+                var response = await _purchaseService.ProcessPurchase(newPurchaseDto,email);
+                return Ok();
+            }
+            catch(Exception ex){
+                return BadRequest(ex.Message);
+            }
+            }else{
+                return Unauthorized("Para realizar una compra, primero debe iniciar sesión.");
+            }
         }
 
     }
