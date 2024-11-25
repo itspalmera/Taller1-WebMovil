@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CloudinaryDotNet.Actions;
+using CloudinaryDotNet.Actions;
+using Microsoft.AspNetCore.Http;
 
 namespace Taller1_WebMovil.Src.Interface
 {
-    public class IPhotoService
+    public interface IPhotoService
     {
         Task<ImageUploadResult> AddPhotoAsync(IFormFile formFile);
     }
