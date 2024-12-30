@@ -55,5 +55,7 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="product">The product with updated details.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         Task UpdateProductAsync(Product product);
+
+        Task<Category?> GetCategoryByNameAsync(string categoryName);
     }
 }

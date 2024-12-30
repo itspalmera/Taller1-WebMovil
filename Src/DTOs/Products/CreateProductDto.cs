@@ -44,6 +44,7 @@ public string name { get; set; }
         /// <summary>
         /// Gets or sets the category of the product.
         /// </summary>
+        [Required(ErrorMessage = "El nombre de la categoría es obligatorio.")]
         public String categoryName { get; set; }
     } 
 }

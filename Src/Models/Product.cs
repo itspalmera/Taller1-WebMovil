@@ -44,15 +44,7 @@ namespace Taller1_WebMovil.Src.Models
         /// </summary>
         public bool enabled { get; set; }
 
-        // Relationships
-        /// <summary>
-        /// Gets or sets the category ID that the product belongs to.
-        /// </summary>
-        public int categoryId { get; set; }
 
-        /// <summary>
-        /// Gets or sets the category of the product.
-        /// </summary>
-        public Category category { get; set; } = null!;
+        public String categoryName { get; set; } = null!;
     }
 }

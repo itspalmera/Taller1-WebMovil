@@ -48,7 +48,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 80,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 1
+                            categoryName = "Poleras"
                         },
                         new Product
                         {
@@ -57,7 +57,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 80,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 2
+                            categoryName = "Gorros"
                         },
                         new Product
                         {
@@ -66,7 +66,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 80,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 1
+                            categoryName = "Poleras"
                         },
                         new Product
                         {
@@ -75,7 +75,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 50,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 3
+                            categoryName = "Juguetería"
                         },
                         new Product
                         {
@@ -84,7 +84,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 100,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 3
+                            categoryName = "Poleras"
                         },
                         new Product
                         {
@@ -93,7 +93,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 60,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 2
+                            categoryName = "Gorros"
                         },
                         new Product
                         {
@@ -102,7 +102,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 120,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 1
+                            categoryName = "Poleras"
                         },
                         new Product
                         {
@@ -111,7 +111,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 50,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 5
+                            categoryName = "Libros"
                         },
                         new Product
                         {
@@ -120,7 +120,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 70,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 1
+                            categoryName = "Poleras"
                         },
                         new Product
                         {
@@ -129,7 +129,7 @@ namespace Taller1_WebMovil.Src.Data
                             stock = 200,
                             image = "imagen",
                             enabled = true,
-                            categoryId = 4
+                            categoryName = "Alimentación"
                         }
                     );
                     context.SaveChanges();

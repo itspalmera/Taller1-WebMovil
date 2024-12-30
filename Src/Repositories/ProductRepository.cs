@@ -92,30 +92,40 @@ namespace Taller1_WebMovil.Src.Repositories
         /// <param name="category">Category to filter products.</param>
         /// <param name="sort">Sort order ("asc" for ascending, "desc" for descending) by price.</param>
         /// <returns>A list of filtered and sorted products.</returns>
-        public async Task<List<Product>> GetAllProductsAsync(string? text, string? category, string? sort)
+       public async Task<List<Product>> GetAllProductsAsync(string? text, string? category, string? sort)
         {
-            var query = _dataContext.Products.AsQueryable();
+            var query = _dataContext.Products.Where(p => p.enabled).AsQueryable();
 
-            //Filter by text
-            if(!string.IsNullOrEmpty(text))
+            // Filtro por texto
+            if (!string.IsNullOrEmpty(text))
             {
                 query = query.Where(x => x.name.Contains(text));
             }
 
-            //Filter by category
-            if(!string.IsNullOrEmpty(category))
+            // Filtro por categoría (usando el nombre directamente)
+            if (!string.IsNullOrEmpty(category))
             {
-                query = query.Where(x => x.category.name == category);
+                query = query.Where(x => x.categoryName == category);
             }
 
-            //Filter by sort
+            // Ordenar por precio
             if (!string.IsNullOrEmpty(sort))
             {
-                query = sort.ToLower() == "asc" ? query.OrderBy(x => x.price) : query.OrderByDescending(x => x.price);
+                query = sort.ToLower() == "asc"
+                    ? query.OrderBy(x => x.price)
+                    : query.OrderByDescending(x => x.price);
             }
 
-            
             return await query.ToListAsync();
         }
+
+
+
+        public async Task<Category?> GetCategoryByNameAsync(string categoryName)
+        {
+            return await _dataContext.Categories.FirstOrDefaultAsync(c => c.name == categoryName);
+        }
+
+
     }
 }

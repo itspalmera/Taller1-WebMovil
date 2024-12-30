@@ -8,35 +8,59 @@ namespace Taller1_WebMovil.Src.Services
 {
     public class PhotoService : IPhotoService
     {
+
         private readonly Cloudinary _cloudinary;
 
-        public PhotoService(IOptions<CloudinarySettings> config)
+        public PhotoService(IOptions<CloudinarySettings> configuration)
         {
-            var settings = config.Value;
             var account = new Account(
-                settings.CloudName,
-                settings.ApiKey,
-                settings.ApiSecret
+                configuration.Value.CloudName,
+                configuration.Value.ApiKey,
+                configuration.Value.ApiSecret
             );
+
             _cloudinary = new Cloudinary(account);
         }
 
-        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile formFile)
+
+        public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
             var uploadResult = new ImageUploadResult();
 
-            if (formFile.Length > 0)
+            if (file.Length > 0)
             {
-                using var stream = formFile.OpenReadStream();
+
+                var allowedTypes = new List<string> { "image/jpeg", "image/png" };
+                if (!allowedTypes.Contains(file.ContentType))
+                {
+                    throw new Exception("Tipo de archivo no permitido.");
+                }
+
+                using var stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams
                 {
-                    File = new FileDescription(formFile.FileName, stream),
-                    Transformation = new Transformation().Crop("fill").Gravity("face").Width(500).Height(500)
+                    File = new FileDescription(file.FileName, stream),
+                    Transformation = new Transformation().Height(500).Width(500).Crop("fill").Gravity("face")
                 };
+
                 uploadResult = await _cloudinary.UploadAsync(uploadParams);
             }
 
             return uploadResult;
         }
+
+
+        public async Task<DeletionResult> DeletePhotoAsync(string publicId)
+        {
+            if (string.IsNullOrEmpty(publicId))
+            {
+                throw new Exception("Id de imagen no encontrado.");
+            }
+
+            var deletionParams = new DeletionParams(publicId);
+            var result = await _cloudinary.DestroyAsync(deletionParams);
+            return result;
+        }
+        
     }
 }

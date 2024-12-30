@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Models;
 using Taller1_WebMovil.Src.DTOs.Products;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Taller1_WebMovil.Src.Controller
@@ -41,31 +42,28 @@ namespace Taller1_WebMovil.Src.Controller
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
         {
-            //Check if the product already exists
-            bool nameExists = await _productRepository.ExistsByName(createProductDto.name);
-            //TODO: Check if the category exists
-
-            if(nameExists)
+            // Validar si la categoría existe
+            var category = await _productRepository.GetCategoryByNameAsync(createProductDto.categoryName);
+            if (category == null)
             {
-                return Conflict(new {message = "El producto ya existe"});
+                return BadRequest(new { message = "La categoría especificada no existe." });
             }
 
-            //Create the product
-            
+            // Crear el producto
             var newProduct = new Product
             {
                 name = createProductDto.name,
                 price = createProductDto.price,
                 stock = createProductDto.stock,
                 image = createProductDto.image,
-                category = createProductDto.category
+                enabled = true,
+                categoryName = category.name // Usar el nombre en la vista pero el ID internamente
             };
 
-            //Add the product to the database
             await _productRepository.AddProductAsync(newProduct);
-            return CreatedAtAction(nameof(GetProductById), new {id = newProduct.id}, newProduct);
-
+            return CreatedAtAction(nameof(GetProductById), new { id = newProduct.id }, newProduct);
         }
+
 
 
         /// <summary>
@@ -125,7 +123,7 @@ namespace Taller1_WebMovil.Src.Controller
             product.price = updateProductDto.price;
             product.stock = updateProductDto.stock;
             product.image = updateProductDto.image;
-            product.category = updateProductDto.category;
+             product.categoryName = updateProductDto.categoryName;
 
             await _productRepository.UpdateProductAsync(product);
             return Ok(new {message = "Producto actualizado"});
@@ -148,7 +146,7 @@ namespace Taller1_WebMovil.Src.Controller
             }
 
             // Marca el producto como eliminado
-            product.enabled = true; 
+            product.enabled = false; 
             await _productRepository.UpdateProductAsync(product); 
             return Ok(new { message = "Producto marcado como eliminado" });
         }
