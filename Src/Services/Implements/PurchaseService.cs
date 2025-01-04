@@ -73,12 +73,10 @@ namespace Taller1_WebMovil.Src.Services.Implements
         /// A list of purchases made by the specified user, represented as <see cref="PurchaseInfoClientDto"/> objects.
         /// Returns null if the user is not found.
         /// </returns>
-        public async Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string rut){
-            var user = await _userRepository.GetUserByRut(rut);
+        public async Task<IEnumerable<PurchaseInfoClientDto?>> ViewAllPurchaseClient(int page, int pageSize,string email){
+            var user = await _userRepository.GetUserByEmail(email);
             if(user == null) return null;
-            var listPurchases = await _purchaseRepository.ViewAllPurchaseClient(page,pageSize,user);
-
-            var purchaseDto = listPurchases.Select(p => p!.toPurchaseInfoClientDto()).ToList();
+            var purchaseDto = await _purchaseRepository.ViewAllPurchaseClient(page,pageSize,user);
             return purchaseDto;
         }
 

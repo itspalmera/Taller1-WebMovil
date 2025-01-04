@@ -55,7 +55,7 @@ namespace Taller1_WebMovil.Src.Repositories
             // Si el carrito no existe, crearlo
             if (shoppingCart == null)
             {
-                User user = await _context.Users.Where(u=>u.Email == email).FirstOrDefaultAsync();
+                User user = await _context.Users.Where(u => u.Email == email).FirstOrDefaultAsync();
                 if (user == null)
                 {
                     return false;
@@ -75,16 +75,17 @@ namespace Taller1_WebMovil.Src.Repositories
             if (existingItem != null)
             {
                 // Si el producto ya está en el carrito, incrementar la cantidad
-                if(existingItem.quantity+cartItemDto.quantity <1)
-                // Eliminar el item del carrito si la cantidad es menor que 1
-                shoppingCart.Items.Remove(existingItem);
-                else{
-                existingItem.quantity += cartItemDto.quantity;
+                if (existingItem.quantity + cartItemDto.quantity < 1)
+                    // Eliminar el item del carrito si la cantidad es menor que 1
+                    shoppingCart.Items.Remove(existingItem);
+                else
+                {
+                    existingItem.quantity += cartItemDto.quantity;
                 }
             }
             else
             {
-                 // Si el producto no está en el carrito, agregarlo como un nuevo ítem
+                // Si el producto no está en el carrito, agregarlo como un nuevo ítem
                 CartItem newItem = new CartItem
                 {
                     quantity = cartItemDto.quantity,
@@ -109,36 +110,99 @@ namespace Taller1_WebMovil.Src.Repositories
         /// </returns>
         /// <response code="200">Returns true if the item was successfully removed from the cart.</response>
         /// <response code="400">Returns false if the cart or product is not found.</response>
-        public async Task<bool> DeleteCartItem(string email, int productId){
+        public async Task<bool> DeleteCartItem(string email, int productId)
+        {
             // Buscar el carrito del usuario por su email
-        var shoppingCart = await _context.ShoppingCarts
-                                        .Include(sc => sc.Items)
-                                        .ThenInclude(item => item.Product)
-                                        .FirstOrDefaultAsync(sc => sc.user.Email == email);
+            var shoppingCart = await _context.ShoppingCarts
+                                            .Include(sc => sc.Items)
+                                            .ThenInclude(item => item.Product)
+                                            .FirstOrDefaultAsync(sc => sc.user.Email == email);
 
-        if (shoppingCart == null)
-        {
-            // Si el carrito no existe, devolver false
-            return false;
+            if (shoppingCart == null)
+            {
+                // Si el carrito no existe, devolver false
+                return false;
+            }
+
+            // Buscar el item del carrito que coincide con el productId
+            var cartItem = shoppingCart.Items.FirstOrDefault(item => item.productId == productId);
+
+            if (cartItem == null)
+            {
+                // Si no se encuentra el item con ese productId, devolver false
+                return false;
+            }
+
+            // Eliminar el item del carrito
+            shoppingCart.Items.Remove(cartItem);
+
+            // Guardar los cambios en la base de datos
+            await _context.SaveChangesAsync();
+
+            // Retornar true si el item fue eliminado correctamente
+            return true;
         }
 
-        // Buscar el item del carrito que coincide con el productId
-        var cartItem = shoppingCart.Items.FirstOrDefault(item => item.productId == productId);
-
-        if (cartItem == null)
+        public async Task<CartItem?> GetCartItemByUserAndProduct(string userId, int productId)
         {
-            // Si no se encuentra el item con ese productId, devolver false
-            return false;
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                // Si no se encuentra el usuario, retornamos null
+                return null;
+            }
+            var shoppingCart = await _context.ShoppingCarts
+                                          .Where(sc => sc.userId == user.Id)  // Filtrar el carrito por userId
+                                          .Include(sc => sc.Items)             // Incluir los items dentro del carrito
+                                          .ThenInclude(ci => ci.Product)       // Incluir el producto en cada item
+                                          .FirstOrDefaultAsync();
+            if (shoppingCart == null)
+            {
+                // Si no existe el carrito del usuario, retornamos null
+                return null;
+            }
+            // Buscar el CartItem dentro de los Items del carrito usando el productId
+            var cartItem = shoppingCart.Items.FirstOrDefault(ci => ci.productId == productId);
+
+            return cartItem; // Retornar el CartItem si existe, o null si no se encuentra
         }
 
-        // Eliminar el item del carrito
-        shoppingCart.Items.Remove(cartItem);
+        public async Task<bool> UpdateCartItem(string userId, CartItem existingCartItem)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                // Si no se encuentra el usuario, retornamos null
+                return false;
+            }
+            var shoppingCart = await _context.ShoppingCarts
+                                          .Where(sc => sc.userId == user.Id)  // Filtrar el carrito por userId
+                                          .Include(sc => sc.Items)             // Incluir los items dentro del carrito
+                                          .ThenInclude(ci => ci.Product)       // Incluir el producto en cada item
+                                          .FirstOrDefaultAsync();
+            if (shoppingCart == null)
+            {
+                // Si no existe el carrito del usuario, retornamos null
+                return false;
+            }
+            // Buscar el CartItem dentro de los Items del carrito
+            var cartItem = shoppingCart.Items.FirstOrDefault(ci => ci.productId == existingCartItem.productId);
 
-        // Guardar los cambios en la base de datos
-        await _context.SaveChangesAsync();
+            if (cartItem == null)
+            {
+                // Si no se encuentra el CartItem, retornamos false
+                return false;
+            }
 
-        // Retornar true si el item fue eliminado correctamente
-        return true;
-        }   
+            // Actualizar las propiedades del CartItem con los valores nuevos
+            cartItem.quantity = existingCartItem.quantity;
+
+            // Guardar los cambios en la base de datos
+            _context.Update(cartItem);
+            await _context.SaveChangesAsync();
+
+            // Retornar true si la actualización fue exitosa
+            return true;
+        }
     }
 }

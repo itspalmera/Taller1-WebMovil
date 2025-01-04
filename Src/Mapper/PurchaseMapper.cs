@@ -42,7 +42,8 @@ namespace Taller1_WebMovil.Src.Mapper
             {
                 purchaseDate = purchase.purchaseReceipt.purchaseDate.ToString("dd/MM/yyyy").Replace("-", "/"),
                 totalPurchasePrice = purchase.purchaseReceipt.totalPrice,
-                ProductDetails = new List<ProductInfoClientDto>
+                ProductDetails = 
+                new List<ProductInfoClientDto>
                 {
                     new ProductInfoClientDto
                     {
