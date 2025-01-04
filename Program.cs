@@ -37,6 +37,14 @@ builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IProductRepository,ProductRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 
 builder.Services.AddIdentity<User, IdentityRole>(
     opt =>{
@@ -118,7 +126,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseCors("AllowLocalhost");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

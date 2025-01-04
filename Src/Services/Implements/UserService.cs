@@ -39,9 +39,9 @@ namespace Taller1_WebMovil.Src.Services.Implements
         /// <param name="rut">The RUT of the user whose password is being changed.</param>
         /// <param name="changePasswordDto">The password change details.</param>
         /// <returns>True if the password was successfully changed, otherwise false.</returns>
-        public async Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto)
+        public async Task<bool> ChangePassword(string email,string rut, ChangePasswordDto changePasswordDto)
         {
-            var result = await _userRepository.ChangePassword(rut,changePasswordDto);
+            var result = await _userRepository.ChangePassword(email,rut,changePasswordDto);
             return result;
         }
 

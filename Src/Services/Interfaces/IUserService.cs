@@ -27,7 +27,7 @@ namespace Taller1_WebMovil.Src.Services.Interfaces
         /// <param name="rut">The RUT of the user whose password is being changed.</param>
         /// <param name="changePasswordDto">The password change details.</param>
         /// <returns>True if the password was successfully changed, otherwise false.</returns>
-        Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto);
+        Task<bool> ChangePassword(string email,string rut, ChangePasswordDto changePasswordDto);
         
         /// <summary>
         /// Toggles the user's state between enabled and disabled.
