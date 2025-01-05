@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Taller1_WebMovil.Src.DTOs.Products;
 using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Interface
@@ -40,7 +41,7 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="category">Optional category filter to narrow down the search.</param>
         /// <param name="sort">Optional sorting criteria for the product list.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of products that match the criteria.</returns>
-        Task<List<Product>> GetAllProductsAsync(string? text, string? category, string? sort);
+        Task<List<ProductDto>> GetAllProductsAsync(int page,string? text, string? category, string? sort);
 
         /// <summary>
         /// Deletes a product from the system.
@@ -55,5 +56,7 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="product">The product with updated details.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         Task UpdateProductAsync(Product product);
+
+        public Task<bool> existProduct(string name, int id);
     }
 }
