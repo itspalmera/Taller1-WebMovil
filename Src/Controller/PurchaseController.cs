@@ -87,7 +87,7 @@ namespace Taller1_WebMovil.Src.Controller
         /// <response code="200">Returns the list of purchases for the client.</response>
         /// <response code="400">If the request is invalid.</response>
         /// <response code="404">If the client does not exist.</response>
-        [Authorize(Roles = "Cliente")]
+        [Authorize]
         [HttpGet("ViewAllPurchaseClient")]
         public ActionResult<IEnumerable<PurchaseInfoDto?>> ViewAllPurchaseClient(int page, int pageSize)
         {
@@ -107,6 +107,37 @@ namespace Taller1_WebMovil.Src.Controller
             }
             
 
+        }
+        [Authorize(Roles = "Administrador")]
+        [HttpGet("GetPurchaseById/{id}")]
+        public ActionResult<IEnumerable<PurchaseInfoDto?>> GetPurchaseById(int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var result = _purchaseService.GetPurchaseById(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [Authorize(Roles = "Cliente")]
+        [HttpGet("GetPurchaseClientById/{id}")]
+        public ActionResult<IEnumerable<PurchaseInfoDto?>> GetPurchaseClientById(int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid) return BadRequest(ModelState);
+                var email = User.Identity?.Name;
+                var result = _purchaseService.GetPurchaseClientById(id,email);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>

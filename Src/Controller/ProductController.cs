@@ -112,7 +112,7 @@ namespace Taller1_WebMovil.Src.Controller
         /// <returns>An HTTP response indicating the result of the operation.</returns>
         //TODO: Update product
         [HttpPut("{id}")]
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> UpdateProduct(int id, UpdateProductDto updateProductDto)
         {
             var product = await _productRepository.GetProductByIdAsync(id);
@@ -145,19 +145,22 @@ namespace Taller1_WebMovil.Src.Controller
         /// <returns>An HTTP response indicating the result of the operation.</returns>
         //TODO: Delete product
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Administrador")]
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _productRepository.GetProductByIdAsync(id);
-            if (product == null)
+            try
             {
-                return NotFound(new { message = "El producto no existe" });
+                var result = _productRepository.DeleteProduct(id).Result;
+                if (result)
+                {
+                    return Ok("Producto eliminado con éxito");
+                }
+                return BadRequest("Producto no encontrado");
             }
-
-            // Marca el producto como eliminado
-            product.enabled = true; 
-            await _productRepository.UpdateProductAsync(product); 
-            return Ok(new { message = "Producto marcado como eliminado" });
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

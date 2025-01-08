@@ -87,5 +87,18 @@ namespace Taller1_WebMovil.Src.Services.Implements
             return result;
 
         }
+
+        public async Task<PurchaseInfoClientDto?> GetPurchaseById(int id){
+            var purchase = await _purchaseRepository.GetPurchaseById(id);
+            if(purchase == null) return null;
+            return purchase;
+        }
+        public async Task<PurchaseInfoClientDto?> GetPurchaseClientById(int id, string email){
+            var user = await _userRepository.GetUserByEmail(email);
+            if(user == null) return null;
+            var purchase = await _purchaseRepository.GetPurchaseById(id);
+            if(purchase == null) return null;
+            return purchase;
+        }
     }
 }

@@ -139,5 +139,16 @@ namespace Taller1_WebMovil.Src.Repositories
 
             return products;
         }
+        public async Task<bool> DeleteProduct(int id)
+        {
+            var deleteProduct = await _dataContext.Products.FindAsync(id);
+            if(deleteProduct == null)
+            {
+                return false;
+            }
+            _dataContext.Products.Remove(deleteProduct);
+            await _dataContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

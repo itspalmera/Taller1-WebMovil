@@ -61,11 +61,13 @@ namespace Taller1_WebMovil.Src.Controller
             try{
                 if(!ModelState.IsValid) return BadRequest(ModelState);
 
-                var response = await _authService.Login(loginUserDto);
+                var token = await _authService.Login(loginUserDto);
 
-                if(response is null) return BadRequest("Datos incorrectos.");
-                    return Ok(response);
-                }
+                if(token is null) return BadRequest(new {message ="Los datos ingresados son incorrectos."});
+                if(token is "Deshabilitado") return BadRequest(new {message ="El usuario se encuentra deshabilitado."});
+                    
+                return Ok(new {token});
+            }
             catch(Exception ex){
                 return BadRequest(ex.Message);
             }

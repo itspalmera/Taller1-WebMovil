@@ -42,5 +42,7 @@ namespace Taller1_WebMovil.Src.Interface
         Task<IEnumerable<PurchaseInfoClientDto>> ViewAllPurchaseClient(int page, int pageSize, User user);
 
         Task<bool> ProcessPurchase(NewPurchaseDto newPurchaseDto,User user);
+
+        Task<PurchaseInfoClientDto> GetPurchaseById(int id);
     }
 }

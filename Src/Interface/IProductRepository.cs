@@ -58,5 +58,7 @@ namespace Taller1_WebMovil.Src.Interface
         Task UpdateProductAsync(Product product);
 
         public Task<bool> existProduct(string name, int id);
+
+        Task<bool> DeleteProduct(int id);
     }
 }

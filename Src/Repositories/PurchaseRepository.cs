@@ -194,5 +194,33 @@ namespace Taller1_WebMovil.Src.Repositories
 
             return true;
         }
+
+        public async Task<PurchaseInfoClientDto> GetPurchaseById(int id)
+        {
+            var purchases = await _context.Purchases.Where(p => p.purchaseReceiptId == id)
+                                                    .Include(p => p.purchaseReceipt)
+                                                    .Include(p => p.product)
+                                                    .ThenInclude(product => product.category)
+                                                    .ToListAsync();
+
+            if (purchases == null || purchases.Count == 0)
+                return null;
+
+            var result = new PurchaseInfoClientDto
+            {
+                purchaseDate = purchases.First().purchaseReceipt.purchaseDate.ToString("dd/MM/yyyy"),
+                totalPurchasePrice = purchases.First().purchaseReceipt.totalPrice,
+                ProductDetails = purchases.Select(p => new ProductInfoClientDto
+                {
+                    nameProduct = p.product.name,
+                    Type = p.product.category.name,
+                    price = p.product.price.ToString(),
+                    quantity = p.quantity.ToString(),
+                    totalPrice = (p.product.price * p.quantity).ToString()
+                }).ToList()
+            };
+
+            return result;
+        }
     }
 }
