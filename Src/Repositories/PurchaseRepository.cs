@@ -99,38 +99,24 @@ namespace Taller1_WebMovil.Src.Repositories
         /// </returns>
         /// <response code="200">Returns a list of the user's purchases.</response>
         /// <response code="400">Returns an empty list if no purchases are found for the user.</response>
-        public async Task<IEnumerable<PurchaseInfoClientDto>> ViewAllPurchaseClient(int page, int pageSize, User user)
+        public async Task<IEnumerable<Purchase>> ViewAllPurchaseClient(int page, int pageSize, User user)
         {
+            int totalPurchase = await _context.Purchases.CountAsync();
+            if (page < 1) page = 1;
+            if (pageSize < 10) pageSize = 10;
+            int maxPage = (int)Math.Ceiling((Double)totalPurchase / page);
+            if (page > maxPage) page = maxPage;
 
-            var purchases = await _context.Purchases
-        .Where(p => p.user.Id == user.Id)
-        .Include(p => p.purchaseReceipt)
-        .Include(p => p.product)
-        .ThenInclude(product => product.category)
-        .OrderByDescending(p => p.purchaseReceipt.purchaseDate)
-        .ToListAsync();
 
-    // Agrupar por fecha de compra y precio total
-    var groupedPurchases = purchases
-        .GroupBy(p => new { 
-            p.purchaseReceipt.purchaseDate, 
-            p.purchaseReceipt.totalPrice 
-        })
-        .Select(group => new PurchaseInfoClientDto
-        {
-            purchaseDate = group.Key.purchaseDate.ToString("dd/MM/yyyy"),
-            totalPurchasePrice = group.Key.totalPrice,
-            ProductDetails = group.Select(p => new ProductInfoClientDto
-            {
-                nameProduct = p.product.name,
-                Type = p.product.category.name,
-                price = p.product.price.ToString(),
-                quantity = p.quantity.ToString(),
-                totalPrice = (p.product.price * p.quantity).ToString()
-            }).ToList()
-        }).ToList();
-
-    return groupedPurchases;
+            var purchases = await _context.Purchases.Where(p => p.user.Id == user.Id)
+                                            .Include(p => p.purchaseReceipt)
+                                            .Include(p => p.user)
+                                            .GroupBy(p => p.purchaseReceiptId)
+                                            .Select(p => p.FirstOrDefault()) 
+                                            .Skip((page - 1) * pageSize)
+                                            .Take(pageSize)
+                                            .ToListAsync();
+            return purchases;
         }
         /// <summary>
         /// Processes a new purchase by creating a purchase receipt and adding the purchase details to the database.
