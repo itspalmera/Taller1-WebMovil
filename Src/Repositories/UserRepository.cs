@@ -58,9 +58,9 @@ namespace Taller1_WebMovil.Src.Repositories
         /// <param name="rut">The user's RUT.</param>
         /// <param name="changePasswordDto">The password change details.</param>
         /// <returns>True if the password was successfully changed, otherwise false.</returns>
-        public async Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto)
+        public async Task<bool> ChangePassword(string email,string rut, ChangePasswordDto changePasswordDto)
         {
-            var user = await _context.Users.Where(u => u.rut == rut).FirstOrDefaultAsync();
+            var user = await _context.Users.Where(u => u.rut == rut && u.Email ==email).FirstOrDefaultAsync();
             if(user == null){
                 return false;
             }
@@ -190,7 +190,7 @@ namespace Taller1_WebMovil.Src.Repositories
             var administrador = await _context.UserRoles.Where(ur => ur.RoleId == "1").FirstOrDefaultAsync();
             int totalUser = await _context.Users.CountAsync(u=> u.Id != administrador.UserId);
             if (page < 1) page = 1;
-            if (pageSize <2) pageSize =2;
+            if (pageSize <10) pageSize =10;
             int maxPage = (int)Math.Ceiling((Double)totalUser/page);
             if (page>maxPage) page = maxPage;
 

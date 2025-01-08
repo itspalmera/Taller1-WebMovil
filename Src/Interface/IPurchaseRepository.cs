@@ -39,8 +39,10 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="pageSize">The number of purchases per page.</param>
         /// <param name="user">The client whose purchases are to be retrieved.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a list of purchases for the specified client.</returns>
-        Task<IEnumerable<Purchase?>> ViewAllPurchaseClient(int page, int pageSize, User user);
+        Task<IEnumerable<PurchaseInfoClientDto>> ViewAllPurchaseClient(int page, int pageSize, User user);
 
         Task<bool> ProcessPurchase(NewPurchaseDto newPurchaseDto,User user);
+
+        Task<PurchaseInfoClientDto> GetPurchaseById(int id);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Taller1_WebMovil.Src.DTOs;
+using Taller1_WebMovil.Src.Models;
 
 namespace Taller1_WebMovil.Src.Interface
 {
@@ -28,5 +29,9 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="productId">The ID of the product to remove from the cart.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating success or failure.</returns>
         Task<bool> DeleteCartItem(string email, int productId);
+
+        Task<CartItem?> GetCartItemByUserAndProduct(string userId, int productId);
+
+        Task<bool>UpdateCartItem(string userId, CartItem existingCartItem);
     }
 }

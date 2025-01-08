@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Taller1_WebMovil.Src.Data;
+using Taller1_WebMovil.Src.DTOs.Products;
 using Taller1_WebMovil.Src.DTOs.Purchase;
 using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Models;
@@ -78,6 +79,8 @@ namespace Taller1_WebMovil.Src.Repositories
 
             var purchases = await _context.Purchases.Include(p => p.purchaseReceipt)
                                             .Include(p => p.user)
+                                            .GroupBy(p => p.purchaseReceiptId)
+                                            .Select(p => p.FirstOrDefault()) 
                                             .Skip((page - 1) * pageSize)
                                             .Take(pageSize)
                                             .ToListAsync();
@@ -96,18 +99,38 @@ namespace Taller1_WebMovil.Src.Repositories
         /// </returns>
         /// <response code="200">Returns a list of the user's purchases.</response>
         /// <response code="400">Returns an empty list if no purchases are found for the user.</response>
-        public async Task<IEnumerable<Purchase?>> ViewAllPurchaseClient(int page, int pageSize, User user)
+        public async Task<IEnumerable<PurchaseInfoClientDto>> ViewAllPurchaseClient(int page, int pageSize, User user)
         {
 
-            var purchases = await _context.Purchases.Where(p => p.user.Id == user.Id)
-                                            .Include(p => p.purchaseReceipt)
-                                            .Include(p => p.user)
-                                            .Include(p => p.product)
-                                            .ThenInclude(product => product.category)
-                                            .OrderByDescending(p => p.purchaseReceipt.purchaseDate)
-                                            .ToListAsync();
-    
-            return purchases;
+            var purchases = await _context.Purchases
+        .Where(p => p.user.Id == user.Id)
+        .Include(p => p.purchaseReceipt)
+        .Include(p => p.product)
+        .ThenInclude(product => product.category)
+        .OrderByDescending(p => p.purchaseReceipt.purchaseDate)
+        .ToListAsync();
+
+    // Agrupar por fecha de compra y precio total
+    var groupedPurchases = purchases
+        .GroupBy(p => new { 
+            p.purchaseReceipt.purchaseDate, 
+            p.purchaseReceipt.totalPrice 
+        })
+        .Select(group => new PurchaseInfoClientDto
+        {
+            purchaseDate = group.Key.purchaseDate.ToString("dd/MM/yyyy"),
+            totalPurchasePrice = group.Key.totalPrice,
+            ProductDetails = group.Select(p => new ProductInfoClientDto
+            {
+                nameProduct = p.product.name,
+                Type = p.product.category.name,
+                price = p.product.price.ToString(),
+                quantity = p.quantity.ToString(),
+                totalPrice = (p.product.price * p.quantity).ToString()
+            }).ToList()
+        }).ToList();
+
+    return groupedPurchases;
         }
         /// <summary>
         /// Processes a new purchase by creating a purchase receipt and adding the purchase details to the database.
@@ -170,6 +193,34 @@ namespace Taller1_WebMovil.Src.Repositories
             }
 
             return true;
+        }
+
+        public async Task<PurchaseInfoClientDto> GetPurchaseById(int id)
+        {
+            var purchases = await _context.Purchases.Where(p => p.purchaseReceiptId == id)
+                                                    .Include(p => p.purchaseReceipt)
+                                                    .Include(p => p.product)
+                                                    .ThenInclude(product => product.category)
+                                                    .ToListAsync();
+
+            if (purchases == null || purchases.Count == 0)
+                return null;
+
+            var result = new PurchaseInfoClientDto
+            {
+                purchaseDate = purchases.First().purchaseReceipt.purchaseDate.ToString("dd/MM/yyyy"),
+                totalPurchasePrice = purchases.First().purchaseReceipt.totalPrice,
+                ProductDetails = purchases.Select(p => new ProductInfoClientDto
+                {
+                    nameProduct = p.product.name,
+                    Type = p.product.category.name,
+                    price = p.product.price.ToString(),
+                    quantity = p.quantity.ToString(),
+                    totalPrice = (p.product.price * p.quantity).ToString()
+                }).ToList()
+            };
+
+            return result;
         }
     }
 }

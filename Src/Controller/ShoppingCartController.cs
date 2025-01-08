@@ -32,7 +32,7 @@ namespace Taller1_WebMovil.Src.Controller
         /// <param name="shoppingCartService">Service for handling shopping cart logic.</param>
         /// <param name="cartItemRepository">Repository for managing cart items.</param>
         /// <param name="productRepository">Repository for managing product data.</param>
-        public ShoppingCartController(IShoppingCartService shoppingCartService,ICartItemRepository cartItemRepository,IProductRepository productRepository)
+        public ShoppingCartController(IShoppingCartService shoppingCartService, ICartItemRepository cartItemRepository, IProductRepository productRepository)
         {
             _shoppingCartService = shoppingCartService;
             _cartItemRepository = cartItemRepository;
@@ -60,6 +60,64 @@ namespace Taller1_WebMovil.Src.Controller
                 return Ok(cart);
             }
         }
+        [HttpPost("SyncCart")]
+        public async Task<IActionResult> SyncCart()
+        {
+            // Verificar si el usuario está autenticado
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("El usuario no está autenticado.");
+            }
+
+            // Obtener el ID del usuario
+            var userId = GetUserId(); // Asegúrate de tener este método que obtiene el ID del usuario autenticado
+
+            // Obtener el carrito de las cookies
+            var cookieValue = Request.Cookies[CartCookieKey];
+            if (string.IsNullOrWhiteSpace(cookieValue)) return Ok("No hay elementos en el carrito de las cookies.");
+
+            // Deserializar los elementos del carrito desde las cookies
+            var cookieCartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue);
+            if (cookieCartItems == null || !cookieCartItems.Any()) return Ok("El carrito de las cookies está vacío.");
+
+            // Recorrer los productos del carrito en las cookies
+            foreach (var cookieItem in cookieCartItems)
+            {
+                var product = await _productRepository.GetProductByIdAsync(cookieItem.productId);
+                if (product == null)
+                {
+                    // Si el producto no existe en la base de datos, lo ignoramos
+                    continue;
+                }
+
+                // Verificar si este producto ya existe en el carrito del usuario
+                var existingItem = await _cartItemRepository.GetCartItemByUserAndProduct(userId, cookieItem.productId);
+
+                if (existingItem != null)
+                {
+                    // Si el producto ya está en el carrito, actualizar la cantidad
+                    existingItem.quantity += cookieItem.quantity;
+                    await _cartItemRepository.UpdateCartItem(userId,existingItem); // Actualizar en la base de datos
+                }
+                else
+                {
+                    // Si el producto no existe en el carrito del usuario, agregarlo
+                    var newCartItem = new CartItemDto
+                    {
+                        productId = cookieItem.productId,
+                        quantity = cookieItem.quantity
+                    };
+                    await _cartItemRepository.AddToCart(userId, newCartItem);
+                }
+            }
+
+            // Eliminar la cookie después de sincronizar
+            Response.Cookies.Delete(CartCookieKey);
+
+            // Devolver una respuesta indicando que la sincronización fue exitosa
+            return Ok("Carrito sincronizado con éxito.");
+        }
+
         /// <summary>
         /// Adds an item to the user's shopping cart.
         /// </summary>
@@ -70,58 +128,83 @@ namespace Taller1_WebMovil.Src.Controller
         [HttpPost("AddToCart")]
         public async Task<IActionResult> AddToCart([FromBody] CartItemDto cartItemDto)
         {
+            if (cartItemDto.quantity < 1) return BadRequest("La cantidad no puede ser menor a 1.");
             if (User.Identity.IsAuthenticated)
             {
                 // Usuario registrado: agregar al carrito en la base de datos
                 var userId = GetUserId();
-                //Crear metodo para poder ver si hay alguna cookie con informacion, si hay, se actualiza el carrito y se elimina la cookie
-                //si no, no hacer nada.
 
+                // Sincronizar el carrito de cookies con la base de datos (si aplica)
+                var cookieValue = Request.Cookies[CartCookieKey];
+                if (!string.IsNullOrWhiteSpace(cookieValue))
+                {
+                    var cookieCartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue);
+                    if (cookieCartItems != null)
+                    {
+                        foreach (var cookieItem in cookieCartItems)
+                        {
+                            await _cartItemRepository.AddToCart(userId, new CartItemDto
+                            {
+                                productId = cookieItem.productId,
+                                quantity = cookieItem.quantity
+                            });
+                        }
+                        Response.Cookies.Delete(CartCookieKey); // Eliminar la cookie después de sincronizar
+                    }
+                }
+
+                // Agregar el producto actual al carrito de la base de datos
                 var cartItem = await _cartItemRepository.AddToCart(userId, cartItemDto);
-                if(!cartItem) return NotFound("El producto ingresado no existe.");
+                if (!cartItem) return NotFound("El producto ingresado no existe.");
+
+                return Ok(cartItemDto.quantity > 0 ? "Producto agregado al carrito" : "Producto eliminado del carrito");
             }
             else
             {
-                // Usuario no registrado: agregar a las cookies
+                // Usuario no registrado: agregar al carrito en las cookies
                 var cookieValue = Request.Cookies[CartCookieKey];
-                // Obtener o crear un GUID para el usuario no autenticado
-                var userGuid = GetOrCreateUserGuid();
 
-                // Obtener los productos del carrito desde las cookies
-                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
+                // Obtener o inicializar el carrito
+                var cartItems = string.IsNullOrWhiteSpace(cookieValue)
+                    ? new List<CartItem>()
+                    : JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
 
-                // Verificar si el producto ya existe en el carrito
+                // Buscar el producto en el carrito
                 var existingItem = cartItems.FirstOrDefault(item => item.productId == cartItemDto.productId);
 
                 if (existingItem != null)
                 {
-                    if(existingItem.quantity+cartItemDto.quantity <1)
-                    // Eliminar el item del carrito si la cantidad es menor que 1
-                    cartItems.Remove(existingItem);
-                    else{
                     existingItem.quantity += cartItemDto.quantity;
-                    }   
+
+                    // Eliminar el producto si la cantidad es menor a 1
+                    if (existingItem.quantity < 1) cartItems.Remove(existingItem);
                 }
                 else
                 {
-                    if(cartItemDto.quantity<1)return BadRequest("La cantidad no puede ser menor a 1.");
-                    // Si el producto no está en el carrito, agregarlo como un nuevo item
-                    var newCartItem = new CartItem
+                    // Agregar un nuevo producto al carrito si no existe y la cantidad es válida
+                    if (cartItemDto.quantity > 0)
                     {
-                        productId = cartItemDto.productId,
-                        Product = await _productRepository.GetProductByIdAsync(cartItemDto.productId),
-                        quantity = cartItemDto.quantity
-                    };
-                    string nameProduct = newCartItem.Product.name;
+                        var product = await _productRepository.GetProductByIdAsync(cartItemDto.productId);
+                        if (product == null) return NotFound("El producto ingresado no existe.");
 
-                    cartItems.Add(newCartItem);
+                        cartItems.Add(new CartItem
+                        {
+                            productId = cartItemDto.productId,
+                            Product = product,
+                            quantity = cartItemDto.quantity
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest("La cantidad no puede ser menor a 1 para un nuevo producto.");
+                    }
                 }
+
                 // Guardar el carrito actualizado en las cookies
-                SaveCartItemsToCookies(userGuid, cartItems);
+                SaveCartItemsToCookies(GetOrCreateUserGuid(), cartItems);
+
+                return Ok(cartItemDto.quantity > 0 ? "Producto agregado al carrito" : "Producto eliminado del carrito");
             }
-            if(cartItemDto.quantity<0){
-                return Ok($"Se eliminaron ${-1*cartItemDto.quantity} del carrito");
-            }else{return Ok("Producto agregado al carrito");}
         }
         /// <summary>
         /// Removes an item from the user's shopping cart.
@@ -138,19 +221,19 @@ namespace Taller1_WebMovil.Src.Controller
             {
                 // El usuario está autenticado: trabajar con la base de datos
                 var userId = GetUserId();
-                var shoppingCart =await _cartItemRepository.DeleteCartItem(userId,idProduct);
-                if(!shoppingCart)return BadRequest("No se pudo eliminar el producto, ya que no se encuentra en su carrito.");
-                
+                var shoppingCart = await _cartItemRepository.DeleteCartItem(userId, idProduct);
+                if (!shoppingCart) return BadRequest("No se pudo eliminar el producto, ya que no se encuentra en su carrito.");
+
             }
             else
             {
-               // Usuario no registrado: agregar a las cookies
+                // Usuario no registrado: agregar a las cookies
                 var cookieValue = Request.Cookies[CartCookieKey];
                 // Obtener o crear un GUID para el usuario no autenticado
                 var userGuid = GetOrCreateUserGuid();
 
                 // Obtener los productos del carrito desde las cookies
-                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>(); 
+                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
                 // Verificar si el producto ya existe en el carrito
                 var existingItem = cartItems.FirstOrDefault(item => item.productId == idProduct);
 
@@ -180,20 +263,48 @@ namespace Taller1_WebMovil.Src.Controller
         /// <returns>A list of shopping cart items.</returns>
         private List<ShoppingCartInfoDto> GetCartFromCookies()
         {
+            // Obtén el valor de la cookie
+            // Obtener el valor de la cookie
             var cookieValue = Request.Cookies[CartCookieKey];
-            // Deserializar el carrito de las cookies
-            var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
 
-            // Mapear los CartItems a ShoppingCartInfoDto
-            var cartItemsDto = cartItems.Select(cartItem => ShoppingCartMapper.ToShoppingCartInfoDto(cartItem)).ToList();
-            return cartItemsDto;
+            // Validar si la cookie no existe o está vacía
+            if (string.IsNullOrWhiteSpace(cookieValue))
+            {
+                return new List<ShoppingCartInfoDto>(); // Devuelve un carrito vacío si no hay cookie
+            }
+
+            try
+            {
+                // Intentar deserializar el JSON
+                var cartItems = JsonSerializer.Deserialize<List<CartItem>>(cookieValue);
+
+                // Si el carrito deserializado es nulo, inicializar una lista vacía
+                if (cartItems == null)
+                {
+                    return new List<ShoppingCartInfoDto>();
+                }
+
+                // Mapear los CartItems a ShoppingCartInfoDto
+                var cartItemsDto = cartItems
+                    .Select(cartItem => ShoppingCartMapper.ToShoppingCartInfoDto(cartItem))
+                    .ToList();
+
+                return cartItemsDto;
+            }
+            catch (JsonException ex)
+            {
+                // Manejar errores de deserialización
+                Console.WriteLine($"Error al deserializar la cookie: {ex.Message}");
+                return new List<ShoppingCartInfoDto>(); // Devuelve un carrito vacío si el JSON es inválido
+            }
+
         }
         /// <summary>
         /// Saves the shopping cart items to the cookies.
         /// </summary>
         /// <param name="userGuid">The user's GUID.</param>
         /// <param name="cart">The list of cart items to save.</param>
-        private void SaveCartItemsToCookies(string userGuid,List<CartItem> cart)
+        private void SaveCartItemsToCookies(string userGuid, List<CartItem> cart)
         {
             var serializedCart = JsonSerializer.Serialize(cart);
             var cookieOptions = new CookieOptions
@@ -243,9 +354,9 @@ namespace Taller1_WebMovil.Src.Controller
             {
                 return JsonSerializer.Deserialize<List<CartItem>>(cookieValue) ?? new List<CartItem>();
             }
-            return new List<CartItem>();;
+            return new List<CartItem>(); ;
         }
 
-        
+
     }
 }

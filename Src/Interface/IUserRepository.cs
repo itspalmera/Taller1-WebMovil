@@ -56,7 +56,7 @@ namespace Taller1_WebMovil.Src.Interface
         /// <param name="rut">The Rut of the user whose password is being changed.</param>
         /// <param name="changePasswordDto">The new password details.</param>
         /// <returns>A task that returns a boolean indicating whether the password change was successful.</returns>
-        Task<bool> ChangePassword(string rut, ChangePasswordDto changePasswordDto);
+        Task<bool> ChangePassword(string email,string rut, ChangePasswordDto changePasswordDto);
 
         /// <summary>
         /// Adds a new user.

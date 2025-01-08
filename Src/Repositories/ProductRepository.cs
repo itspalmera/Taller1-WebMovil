@@ -6,6 +6,7 @@ using Taller1_WebMovil.Src.Interface;
 using Taller1_WebMovil.Src.Data;
 using Taller1_WebMovil.Src.Models;
 using Microsoft.EntityFrameworkCore;
+using Taller1_WebMovil.Src.DTOs.Products;
 
 
 
@@ -61,6 +62,10 @@ namespace Taller1_WebMovil.Src.Repositories
             _dataContext.Products.Update(product);
             await _dataContext.SaveChangesAsync();
         }
+        public async Task<bool> existProduct(string name, int id)
+        {
+            return await _dataContext.Products.AnyAsync(x => x.name == name && x.id != id);
+        }
 
 
         /// <summary>
@@ -92,30 +97,58 @@ namespace Taller1_WebMovil.Src.Repositories
         /// <param name="category">Category to filter products.</param>
         /// <param name="sort">Sort order ("asc" for ascending, "desc" for descending) by price.</param>
         /// <returns>A list of filtered and sorted products.</returns>
-        public async Task<List<Product>> GetAllProductsAsync(string? text, string? category, string? sort)
+        public async Task<List<ProductDto>> GetAllProductsAsync(int page, string? text, string? category, string? sort)
         {
-            var query = _dataContext.Products.AsQueryable();
+            IQueryable<Product> query = _dataContext.Products.AsQueryable().Include(p => p.category);
 
-            //Filter by text
-            if(!string.IsNullOrEmpty(text))
+            // Filtrar por texto
+            if (!string.IsNullOrEmpty(text))
             {
                 query = query.Where(x => x.name.Contains(text));
             }
 
-            //Filter by category
-            if(!string.IsNullOrEmpty(category))
+            // Filtrar por categoría
+            if (!string.IsNullOrEmpty(category))
             {
                 query = query.Where(x => x.category.name == category);
             }
 
-            //Filter by sort
+            // Ordenar por precio
             if (!string.IsNullOrEmpty(sort))
             {
-                query = sort.ToLower() == "asc" ? query.OrderBy(x => x.price) : query.OrderByDescending(x => x.price);
+                query = sort.ToLower() == "asc"
+                    ? query.OrderBy(x => x.price)
+                    : query.OrderByDescending(x => x.price);
             }
 
-            
-            return await query.ToListAsync();
+            // Configuración de paginación
+            int pageSize = 10;
+            query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+            // Proyección de los productos al DTO
+            var products = await query.Select(product => new ProductDto
+            {
+                id = product.id.ToString(),
+                name = product.name,
+                type = product.category.name,
+                price = product.price.ToString(),
+                stock = product.stock.ToString(),
+                image = product.image,
+                enabled = product.enabled ? "Habilitado" : "Deshabilitado",
+            }).ToListAsync();
+
+            return products;
+        }
+        public async Task<bool> DeleteProduct(int id)
+        {
+            var deleteProduct = await _dataContext.Products.FindAsync(id);
+            if(deleteProduct == null)
+            {
+                return false;
+            }
+            _dataContext.Products.Remove(deleteProduct);
+            await _dataContext.SaveChangesAsync();
+            return true;
         }
     }
 }

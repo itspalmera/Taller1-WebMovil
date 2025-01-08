@@ -81,7 +81,8 @@ namespace Taller1_WebMovil.Src.Controller
             try
             {
                 if (!ModelState.IsValid) return BadRequest(ModelState);
-                var result = _userService.ChangePassword(rut, changePasswordDto).Result;
+                string email = User.Identity.Name;
+                var result = _userService.ChangePassword(email,rut, changePasswordDto).Result;
                 if (!result)
                 {
                     return NotFound("No se pudo cambiar la contraseña al usuario.");
@@ -156,7 +157,7 @@ namespace Taller1_WebMovil.Src.Controller
         /// <response code="200">Returns the list of users matching the search.</response>
         /// <response code="400">If there was an error with the request.</response>
         [Authorize(Roles = "Administrador")]
-        [HttpGet("SearchUser/{page}name")]
+        [HttpGet("SearchUser/{page}&name={name}")]
         public ActionResult<IEnumerable<UserDto?>> SearchUser(int page, string name, int pageSize)
         {
 
