@@ -68,17 +68,16 @@ namespace Taller1_WebMovil.Src.Services.Implements
         /// <returns>A string containing the authentication token, or an error message if authentication fails.</returns>
         public async Task<string> Login(LoginUserDto loginUserDto)
         {
-            string message = "Los datos ingresados son incorrectos.";
-            string message2 = "El usuario está deshabilitado.";
+            string message = "Deshabilitado";
 
             var user = await _userRepository.GetUserByEmail(loginUserDto.email.ToString());
-            if (user is null) return message;
+            if (user is null) return null;
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginUserDto.password, false);
-            if(!result.Succeeded) return message;
+            if(!result.Succeeded) return null;
 
             var verify = await _userRepository.VerifyEnableUserByEmail(loginUserDto.email.ToString());
-            if (verify is false) return message2;
+            if (verify is false) return message;
 
             var token = await _tokenService.CreateToken(user);
             return token;

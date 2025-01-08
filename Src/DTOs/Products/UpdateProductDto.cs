@@ -41,6 +41,6 @@ namespace Taller1_WebMovil.Src.DTOs.Products
         /// <summary>
         /// Gets or sets the category of the product.
         /// </summary>
-        public Category category{ get; set; }
+        public int categoryId{ get; set; }
     }
 }

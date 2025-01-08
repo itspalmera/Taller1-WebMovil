@@ -157,7 +157,7 @@ namespace Taller1_WebMovil.Src.Controller
         /// <response code="200">Returns the list of users matching the search.</response>
         /// <response code="400">If there was an error with the request.</response>
         [Authorize(Roles = "Administrador")]
-        [HttpGet("SearchUser/{page}name")]
+        [HttpGet("SearchUser/{page}&name={name}")]
         public ActionResult<IEnumerable<UserDto?>> SearchUser(int page, string name, int pageSize)
         {
 
