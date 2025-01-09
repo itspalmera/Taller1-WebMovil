@@ -115,7 +115,7 @@ namespace Taller1_WebMovil.Src.Controller
             Response.Cookies.Delete(CartCookieKey);
 
             // Devolver una respuesta indicando que la sincronización fue exitosa
-            return Ok("Carrito sincronizado con éxito.");
+            return Ok(new { message ="Carrito sincronizado con éxito."});
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Taller1_WebMovil.Src.Controller
                 var cartItem = await _cartItemRepository.AddToCart(userId, cartItemDto);
                 if (!cartItem) return NotFound("El producto ingresado no existe.");
 
-                return Ok(cartItemDto.quantity > 0 ? "Producto agregado al carrito" : "Producto eliminado del carrito");
+                return Ok(cartItemDto.quantity > 0 ? new { message = "Producto agregado al carrito" } : new { message = "Producto eliminado del carrito" } );
             }
             else
             {
@@ -203,7 +203,7 @@ namespace Taller1_WebMovil.Src.Controller
                 // Guardar el carrito actualizado en las cookies
                 SaveCartItemsToCookies(GetOrCreateUserGuid(), cartItems);
 
-                return Ok(cartItemDto.quantity > 0 ? "Producto agregado al carrito" : "Producto eliminado del carrito");
+                return Ok(cartItemDto.quantity > 0 ? new { message = "Producto agregado al carrito" } : new { message = "Producto eliminado del carrito" });
             }
         }
         /// <summary>
