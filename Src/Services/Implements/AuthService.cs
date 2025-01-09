@@ -48,7 +48,7 @@ namespace Taller1_WebMovil.Src.Services.Implements
         {
             if (_userRepository.VerifyUserByEMail(registerUserDto.email).Result)
             {
-                throw new Exception("El email ingresado ya existe.");
+                return "El email ingresado ya existe.";
             }
             var userRegistered = await _userRepository.AddUser(registerUserDto);
             if (userRegistered)

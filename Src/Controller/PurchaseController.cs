@@ -87,12 +87,13 @@ namespace Taller1_WebMovil.Src.Controller
         /// <response code="200">Returns the list of purchases for the client.</response>
         /// <response code="400">If the request is invalid.</response>
         /// <response code="404">If the client does not exist.</response>
-        [Authorize]
-        [HttpGet("ViewAllPurchaseClient")]
+        [Authorize(Roles = "Cliente")]
+        [HttpGet("ViewAllPurchaseClient/{page}")]
         public ActionResult<IEnumerable<PurchaseInfoDto?>> ViewAllPurchaseClient(int page, int pageSize)
         {
             try
             {
+
                 if (!ModelState.IsValid) return BadRequest(ModelState);
                 var email = User.Identity?.Name;
                 var result = _purchaseService.ViewAllPurchaseClient(page,pageSize,email);

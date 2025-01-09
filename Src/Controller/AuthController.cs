@@ -42,7 +42,8 @@ namespace Taller1_WebMovil.Src.Controller
                 if(!ModelState.IsValid) return BadRequest(ModelState);
                 
                 var response = await _authService.RegisterUser(registerUserDto);
-                return Ok(response);
+                if(response == "El email ingresado ya existe.") return BadRequest(new {message = response});
+                return Ok(new {response});
             }
             catch(Exception ex){
                 return BadRequest(ex.Message);
